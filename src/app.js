@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import __dirname from './utils.js';
-import authRoutes from './routes/authRoutes.js'
+import authRoutes from './routes/authRoutes.js';
+import cookieParser from 'cookie-parser';
 
 // indicamos en el puerto que queremos q corra el server (puede ser cualquier numero q no este ocupado)
 const PORT = 8080;
@@ -23,6 +24,10 @@ app.use(express.static(__dirname + "/public"));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
+//Analice Cookieel encabezado y complételo req.cookiescon un objeto codificado por los nombres de las cookies.
+//esto para poder obtener informacion del usuario desde la cookie q codificamos cuando el usuario hace login
+//con jwt creamos el token q se guarda en la cookie, esto para asi tener una referencia de cierta informacion no sencible del usuario (como por ejem su rol) y q a su ves sepamos si el usuario q intenta ingresar a ciertos endpoints esta o no autenticada o autorizada
+app.use(cookieParser("palabraSuperSecreta",{}));
 
 // rutas:
 app.use("/",authRoutes);
