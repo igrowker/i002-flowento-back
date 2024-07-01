@@ -112,12 +112,23 @@ class AuthController{
                 cell,
                 country
             });
-    
+
             res.send({
                 status : "success",
                 payload : arrayUsuariosReg
             });
 
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    static allUsers = async (req,res)=>{
+        try {
+            res.send({
+                stattus : "success",
+                payload : arrayUsuariosReg
+            })
         } catch (error) {
             console.log(error);
         }

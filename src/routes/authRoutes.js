@@ -8,9 +8,7 @@ router.post("/login", AuthController.login);
 
 router.post("/register", AuthController.register);
 
-router.get("/probandoAuthMiddleware", checkRol(["admin"]),(req,res)=>{
-    console.log("estar autorizado ya q sos el admin");
-});
+router.get("/usuarios", AuthController.allUsers);
 
 router.get("/probandoAuthMiddleware", checkRol(["user"]),(req,res)=>{
     console.log("estar autorizado ya q sos el user");
