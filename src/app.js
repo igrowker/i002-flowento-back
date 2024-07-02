@@ -1,8 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import __dirname from './utils.js';
-import authRoutes from './routes/authRoutes.js';
 import cookieParser from 'cookie-parser';
+import authRoutes from './routes/authRoutes.js';
+import usersRoutes from './routes/userRoutes.js';
 
 // indicamos en el puerto que queremos q corra el server (puede ser cualquier numero q no este ocupado)
 const PORT = 8080;
@@ -30,7 +31,8 @@ app.use(express.urlencoded({extended:true}));
 app.use(cookieParser("palabraSuperSecreta",{}));
 
 // rutas:
-app.use("/",authRoutes);
+app.use("/auth",authRoutes);
+app.use("/users",usersRoutes);
 
 // iniciamos el servidor esto es necesario xq sino el server no te funciona xq no lo estas iniciando
 const server = app.listen(PORT, ()=>{
