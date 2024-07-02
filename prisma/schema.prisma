@@ -1,0 +1,182 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" //provider:Especifica el postgresqlconector de fuente de datos
+  url      = env("DATABASE_URL") //url: Especifica la URL de conexión para el servidor de base de datos PostgreSQL. En este caso, se utiliza una variable de entorno para proporcionar la URL de conexión.
+}
+
+enum Type {
+  online
+  in_person
+}
+
+enum State {
+  pending
+  fulfilled
+  rejected
+}
+
+enum Attendance_confirmed {
+  yes
+  no
+}
+
+// para crear tablas
+model User {
+  id_user           Int      @id @default(autoincrement()) //id_user es tipo "Int" va a hacer un "@id" y con "@default(autoincrement())" estamos diciendo q el id del usuario no se lo vamos a pasar q prisma se encargue de autoincrementarlo 1 en 1
+  name              String
+  email             String   @unique //"@unique" para indicar q es unico, osea q no puede haber 2 emails iguales
+  password          String
+  phone             String   @unique
+  gender            String
+  registration_date DateTime @default(now()) //la propiedad "DateTime" para crear una fecha y con "@default(now())" para q ponga la fecha actual
+
+  //(relacion 1 a n)
+  //este campo es importante xq sino la referencia de la tabala Proveedores no anda
+  provider     Provider[]
+  event        Event[]
+  inscription  Inscription[]
+  feedback     Feedback[]
+  notification Notification[]
+  // message      Message[]
+  send         Message[]      @relation(name: "send")
+  recive       Message[]      @relation(name: "recive")
+  reserve Reserve[]
+}
+
+// Usuarios - Proveedores: (1:N) Un usuario puede tener múltiples proveedores, pero cada
+// proveedor pertenece a un único usuario.
+
+model Provider {
+  id_provider Int @id @default(autoincrement())
+
+  user_id User @relation(fields: [userId], references: [id_user]) //fields: [userId] donde guarda el dato, references: [id_user] referencia al campo/columna de la tabla Usuarios
+  userId  Int
+
+  name        String
+  description String
+  service     String
+}
+
+// Usuarios - Eventos: (1:N) Un usuario puede crear múltiples eventos, pero cada evento es
+// creado por un único usuario.
+
+model Event {
+  id_event         Int           @id @default(autoincrement())
+  user_id          User          @relation(fields: [userId], references: [id_user])
+  userId           Int
+  name             String
+  description      String
+  start_date       DateTime
+  end_date         DateTime
+  max_capacity     Int
+  current_capacity Int
+  type             Type
+  online_link      Boolean
+  state            State
+  creation_date    DateTime      @default(now())
+  inscription      Inscription[]
+  feedback         Feedback[]
+  qr               QR[]
+}
+
+// Usuarios - Inscripciones: (1: N) Un usuario puede inscribirse en múltiples eventos, pero
+// cada inscripción pertenece a un único usuario.
+
+// Eventos - Inscripciones: (1:N) Un evento puede tener múltiples inscripciones, pero cada
+// inscripción pertenece a un único evento
+
+model Inscription {
+  id_registration      Int                  @id @default(autoincrement())
+  user_id              User                 @relation(fields: [userId], references: [id_user])
+  userId               Int
+  event_id             Event                @relation(fields: [eventId], references: [id_event])
+  eventId              Int
+  attendance_confirmed Attendance_confirmed
+  registration_date    DateTime             @default(now())
+}
+
+// Eventos - Feedback: (1:N) Un evento puede tener múltiples feedbacks y cada feedback
+// pertenece a un único evento.
+
+// Usuarios - Feedback: (1:N) Un usuario puede proporcionar múltiples feedbacks, pero cada
+// feedback pertenece a un único usuario.
+model Feedback {
+  id_feedback   Int      @id @default(autoincrement())
+  user_id       User     @relation(fields: [userId], references: [id_user])
+  userId        Int
+  event_id      Event    @relation(fields: [eventId], references: [id_event])
+  eventId       Int
+  comment       String
+  rating        Int
+  feedback_date DateTime
+}
+
+// Usuarios - Notificaciones: (1:N) Un usuario puede recibir múltiples notificaciones, pero
+// cada notificación pertenece a un único usuario.
+
+model Notification {
+  id_notification Int      @id @default(autoincrement())
+  user_id         User     @relation(fields: [userId], references: [id_user])
+  userId          Int
+  message         String
+  read            String
+  send_date       DateTime
+}
+
+// Usuarios - Mensajes (Remitente - Destinatario): (1:N) Un usuario puede enviar múltiples
+// mensajes y recibir múltiples mensajes, pero cada mensaje tiene un remitente y un
+// destinatario únicos.
+
+model Message {
+  id_message    Int      @id @default(autoincrement())
+  sender_id     User     @relation(name: "send", fields: [userSenderId], references: [id_user])
+  userSenderId  Int
+  receiver_id   User     @relation(name: "recive", fields: [userReciverId], references: [id_user])
+  userReciverId Int
+  content       String
+  send_date     DateTime
+}
+
+// Eventos - Códigos QR: (1:N) Un evento puede tener múltiples códigos QR generados, pero
+// cada código QR pertenece a un único evento.
+model QR {
+  id_qrcode       Int      @id @default(autoincrement())
+  event_id        Event    @relation(fields: [eventId], references: [id_event])
+  eventId         Int
+  code            String   @unique
+  generation_date DateTime @default(now())
+}
+
+model Space {
+  id_space    Int     @id @default(autoincrement())
+  name        String  @unique
+  capacity    Int
+  description String
+  location    String
+  available   Boolean
+  reserve Reserve[]
+}
+
+// Usuarios - Reservas: (1:1) Un usuario puede reservar sólo un espacio y cada reserva
+// pertenece a un único usuario.
+// Espacios - Reservas: (1:1) Un espacio puede tener una sola reserva y cada reserva
+// pertenece a un único espacio.
+model Reserve {
+  id_reservation Int @id @default(autoincrement())
+  user_id User @relation(fields: [userId],references: [id_user])
+  userId Int
+  space_id Space @relation(fields: [spaceId],references: [id_space])
+  spaceId Int
+  reservation_date DateTime
+  start_time DateTime
+  end_time DateTime
+}
