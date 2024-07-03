@@ -4,6 +4,7 @@ import __dirname from './utils.js';
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/authRoutes.js';
 import usersRoutes from './routes/userRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 // indicamos en el puerto que queremos q corra el server (puede ser cualquier numero q no este ocupado)
 const PORT = 8080;
@@ -33,6 +34,7 @@ app.use(cookieParser("palabraSuperSecreta",{}));
 // rutas:
 app.use("/auth",authRoutes);
 app.use("/users",usersRoutes);
+app.use("/admin",adminRoutes);
 
 // iniciamos el servidor esto es necesario xq sino el server no te funciona xq no lo estas iniciando
 const server = app.listen(PORT, ()=>{

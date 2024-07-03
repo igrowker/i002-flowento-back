@@ -1,4 +1,6 @@
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
+import { findIndex } from '../utils.js';
 
 // array provicinal hasta q pueda hacer andar la DB
 const arrayUsers = [
@@ -35,11 +37,7 @@ class User {
         try {
             const id = req.params.id; //se podria obtener del body todo depende de como se haga el formulario en el front
 
-            console.log(id);
-
             const userFind = arrayUsers.find(user => user.id !== id);
-
-            console.log(userFind);
 
             if (userFind === undefined) {
                 return res.status(400).send({
@@ -57,18 +55,11 @@ class User {
         }
     }
 
-    static findUserIndex = (id) => {
-
-        const userIndex = arrayUsers.findIndex(user => user.id === parseInt(id));
-
-        return userIndex;
-    }
-
     static updateUserById = async (req, res) => {
         try {
             const id = req.params.id;
             
-            const userIndex = this.findUserIndex(id);
+            const userIndex = findIndex(id,arrayUsers);
 
             if (userIndex === -1) {
                 return res.status(400).send({
@@ -95,7 +86,7 @@ class User {
 
             const id = req.params.id;
 
-            const userIndex = this.findUserIndex(id);
+            const userIndex = findIndex(id,arrayUsers);
 
             if (userIndex === -1) {
                 return res.status(400).send({
