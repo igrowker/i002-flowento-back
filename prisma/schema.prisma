@@ -37,6 +37,8 @@ model User {
   password          String
   phone             String   @unique
   gender            String
+  country           String
+  birthDate         String
   registration_date DateTime @default(now()) //la propiedad "DateTime" para crear una fecha y con "@default(now())" para q ponga la fecha actual
 
   //(relacion 1 a n)
@@ -49,7 +51,7 @@ model User {
   // message      Message[]
   send         Message[]      @relation(name: "send")
   recive       Message[]      @relation(name: "recive")
-  reserve Reserve[]
+  reserve      Reserve[]
 }
 
 // Usuarios - Proveedores: (1:N) Un usuario puede tener múltiples proveedores, pero cada
@@ -157,13 +159,13 @@ model QR {
 }
 
 model Space {
-  id_space    Int     @id @default(autoincrement())
-  name        String  @unique
+  id_space    Int       @id @default(autoincrement())
+  name        String    @unique
   capacity    Int
   description String
   location    String
   available   Boolean
-  reserve Reserve[]
+  reserve     Reserve[]
 }
 
 // Usuarios - Reservas: (1:1) Un usuario puede reservar sólo un espacio y cada reserva
@@ -171,12 +173,12 @@ model Space {
 // Espacios - Reservas: (1:1) Un espacio puede tener una sola reserva y cada reserva
 // pertenece a un único espacio.
 model Reserve {
-  id_reservation Int @id @default(autoincrement())
-  user_id User @relation(fields: [userId],references: [id_user])
-  userId Int
-  space_id Space @relation(fields: [spaceId],references: [id_space])
-  spaceId Int
+  id_reservation   Int      @id @default(autoincrement())
+  user_id          User     @relation(fields: [userId], references: [id_user])
+  userId           Int
+  space_id         Space    @relation(fields: [spaceId], references: [id_space])
+  spaceId          Int
   reservation_date DateTime
-  start_time DateTime
-  end_time DateTime
+  start_time       DateTime
+  end_time         DateTime
 }
