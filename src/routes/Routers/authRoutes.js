@@ -2,7 +2,7 @@ import { Router } from "express";
 
 const authRoutes = Router();
 
-authRoutesRoutes.get('/', (req, res) => {
+authRoutes.get('/', (req, res) => {
     console.log("Hola back aca en el router de auth");
 
     res.send({

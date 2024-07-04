@@ -1,4 +1,5 @@
 import express from 'express';
+import morgan from 'morgan';
 import cors from 'cors';
 import __dirname from './utils.js';
 import router from './routes/index.js';
@@ -7,6 +8,7 @@ const PORT = 8080;
 
 const app = express();
 
+app.use(morgan('dev'));
 app.use(cors());
 app.use(express.static(__dirname + "/public"));
 app.use(express.json());
