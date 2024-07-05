@@ -1,39 +1,14 @@
 // authController.js: Maneja la autenticación y registro de usuarios
-
-import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 // import {optionsUser} from '../models/User.js';
-import userDB from '../models/User.js';
-import {createHashPassword, isValidPassword} from '../utils.js'
-
-//DB provicinal para probar los enpoints y mientras se eleige si trabajar con Prisma o sequelize
-const arrayUsuariosReg = [
-    {
-        id: crypto.randomUUID(),
-        name: "juan",
-        email: "juan@gmail.com",
-        password: "123"
-    },
-    {
-        id: crypto.randomUUID(),
-        name: "martin",
-        email: "martin@gmail.com",
-        password: "12345"
-    },
-    {
-        id: crypto.randomUUID(),
-        name: "facu",
-        email: "facu@gmail.com",
-        password: "12367"
-    },
-];
+import { getUsers, getUserByEmail, createUser } from '../models/User.js';
+import { createHashPassword, isValidPassword } from '../utils.js'
+import { options } from '../config/config.js';
 
 
 class AuthController {
     static login = async (req, res) => {
         try {
-            let user = {};
-
             const { email, password } = req.body;
 
             if (!email) {
@@ -48,6 +23,12 @@ class AuthController {
                     status: "error",
                     payload: "Contraseña invalida"
                 });
+            }
+
+            const user = await getUserByEmail(email);
+
+            if (options.ADMIN_EMAIL === user.email && options.ADMIN_PASSWORD === user.password) {
+                
             }
 
             //email y contraseña provicinal (esto tendira q venir de la db o las variables de entorno)
@@ -73,19 +54,11 @@ class AuthController {
 
     static register = async (req, res) => {
         try {
-            // console.log(req);
-            console.log(req.body);
             const { first_name, last_name, email, password, passwordRepeat, birthDate, gender, phone, country } = req.body;
 
-            //compruebo si el email esta ya registrado
-            if (arrayUsuariosReg.find(user => user.email === email)) {
-                return res.status(409).send({
-                    status: "error",
-                    payload: `El email: ${email} ya se encuentra en uso`
-                });
-            }
+            const DB = await getUsers();
 
-            //preguntarle al sector front si prefiern respuestas mas personalizadas
+            //check para ver si falta algun dato
             if (!email || !first_name || !last_name || !password || !passwordRepeat || !birthDate || !gender || !phone || !country) {
                 return res.status(400).send({
                     status: "error",
@@ -93,6 +66,15 @@ class AuthController {
                 });
             }
 
+            //compruebo si el email esta ya registrado
+            if (DB.find(user => user.email === email)) {
+                return res.status(409).send({
+                    status: "error",
+                    payload: `El email: ${email} ya se encuentra en uso`
+                });
+            }
+
+            //check para ver si las contraseñas coinciden
             if (password !== passwordRepeat) {
                 return res.status(400).send({
                     status: "error",
@@ -100,47 +82,25 @@ class AuthController {
                 });
             }
 
+            //hash la contraseña
             const hashPassword = await createHashPassword(password);
 
             const user = {
                 name: `${first_name} ${last_name}`,
                 email,
-                password : hashPassword,
+                password: hashPassword,
                 phone,
                 gender,
                 country,
                 birthDate
             }
 
-            const newUser = await userDB.create({
-                data: user,
-            });
-
-            console.log(newUser);
-
-            const allUsers = await userDB.findMany();
-
-            console.log(allUsers);
-
-            // arrayUsuariosReg.push({
-            //     // id provicinal, de esto se encarga la db
-            //     id : crypto.randomUUID(), 
-            //     name : {
-            //         first_name,
-            //         last_name,
-            //         full_name : `${first_name} ${last_name}`
-            //     },
-            //     email,
-            //     password,
-            //     birthDate,
-            //     gender,
-            //     cell,
-            //     country
-            // });
+            //creamos el usuario y lo guardamos en la DB
+            const newUser = await createUser(user);
 
             res.send({
                 status: "success",
-                payload: allUsers
+                payload: newUser
             });
 
         } catch (error) {

@@ -61,3 +61,6 @@ const server = app.listen(PORT, () => {
 // si ya tenes un .env te agrega ahi la DATABASE_URL por defecto lo hace a postgressql pero se puede modificar esa parte y usar otro
 
 // instala si queres la extencion de prisma para q el schema.prisma se vea mejor y te ayude el autocompletado
+
+
+// npx prisma studio --> te abre una interfaz para ver las tablas
