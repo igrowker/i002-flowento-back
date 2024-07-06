@@ -1,32 +1,15 @@
-import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { findIndex } from '../utils.js';
-
-// array provicinal hasta q pueda hacer andar la DB
-const arrayUsers = [
-    {
-        id: 1,
-        name: "Pepe",
-        email: "pepe@gmail.com"
-    },
-    {
-        id: crypto.randomUUID(),
-        name: "Juan",
-        email: "juan@gmail.com"
-    },
-    {
-        id: crypto.randomUUID(),
-        name: "Tino",
-        email: "tino@gmail.com"
-    }
-]
+import { getUsers } from '../models/User.js';
 
 class User {
     static allUsers = async (req, res) => {
         try {
+            const users = await getUsers();
+
             res.send({
                 stattus: "success",
-                payload: arrayUsers
+                payload: users
             })
         } catch (error) {
             console.log(error);

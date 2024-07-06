@@ -32,13 +32,15 @@ enum Attendance_confirmed {
 // para crear tablas
 model User {
   id_user           Int      @id @default(autoincrement()) //id_user es tipo "Int" va a hacer un "@id" y con "@default(autoincrement())" estamos diciendo q el id del usuario no se lo vamos a pasar q prisma se encargue de autoincrementarlo 1 en 1
+  image             String @default("imagen sin definir")
   name              String
   email             String   @unique //"@unique" para indicar q es unico, osea q no puede haber 2 emails iguales
   password          String
-  phone             String   @unique
-  gender            String
-  country           String
-  birthDate         String
+  // phone             String   @unique @default("5555-555555")
+  phone             String   @default("5555-555555")
+  gender            String   @default("no definido")
+  country           String   @default("no definido")
+  birthDate         String   @default("2024-01-01")
   registration_date DateTime @default(now()) //la propiedad "DateTime" para crear una fecha y con "@default(now())" para q ponga la fecha actual
 
   //(relacion 1 a n)

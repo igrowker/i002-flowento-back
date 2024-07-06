@@ -7,12 +7,12 @@ const prisma = new PrismaClient();
 const userDB = prisma.user;
 
 export const getUsers = async()=>{
-    const users = await prisma.user.findMany();
+    const users = await userDB.findMany();
     return users;
 }
 
 export const getUserByEmail = async(email)=>{
-    const user = await prisma.user.findUnique({
+    const user = await userDB.findUnique({
         where : {
             email : email
         }
@@ -22,11 +22,32 @@ export const getUserByEmail = async(email)=>{
 }
 
 export const createUser = async(body)=>{
-    const newUser = await prisma.user.create({
+    const newUser = await userDB.create({
         data : body
     })
 
     return newUser;
 }
 
+export const updateUser = async(body)=>{
+    const {email} = body;
 
+    const updatedUser = await userDB.update({
+        where : {
+            email: email
+        },
+        data : body
+    })
+
+    return updatedUser;
+}
+
+export const deleteUser = async(email)=>{
+    const deletedUser = await userDB.delete({
+        where : {
+            email: email
+        }
+    })
+
+    return deletedUser;
+}

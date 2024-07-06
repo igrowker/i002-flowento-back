@@ -27,15 +27,28 @@ class AuthController {
 
             const user = await getUserByEmail(email);
 
-            if (options.ADMIN_EMAIL === user.email && options.ADMIN_PASSWORD === user.password) {
-                
+            const isValid = await isValidPassword(password, user);
+
+            if (!isValid) {
+                return res.status(400).send({
+                    status : "error",
+                    payload : "La contraseña es invalida"
+                })
             }
 
-            //email y contraseña provicinal (esto tendira q venir de la db o las variables de entorno)
-            user = {
-                email,
-                rol: "admin" //este rol se tendria q obtener desde la DB
+            if (options.ADMIN_EMAIL === email && options.ADMIN_PASSWORD === password) {
+                user = {
+                    email,
+                    rol: "admin"
+                }
             }
+            else{
+                user = {
+                    email,
+                    rol : "user"
+                }
+            }
+            
 
             const token = jwt.sign(user, "jwt-secret-word", { expiresIn: "8h" }); //el exprire podriamos sacarlo, es mas q nada para q se te desconecte automaticamente pasada cierta cantidad de tiempo
 
@@ -54,12 +67,14 @@ class AuthController {
 
     static register = async (req, res) => {
         try {
-            const { first_name, last_name, email, password, passwordRepeat, birthDate, gender, phone, country } = req.body;
+            const { first_name, last_name, email, password, passwordRepeat } = req.body;
+
+            console.log(req.body);
 
             const DB = await getUsers();
 
             //check para ver si falta algun dato
-            if (!email || !first_name || !last_name || !password || !passwordRepeat || !birthDate || !gender || !phone || !country) {
+            if (!email || !first_name || !last_name || !password || !passwordRepeat) {
                 return res.status(400).send({
                     status: "error",
                     payload: "Alguno de los datos no esta completo"
@@ -89,10 +104,10 @@ class AuthController {
                 name: `${first_name} ${last_name}`,
                 email,
                 password: hashPassword,
-                phone,
-                gender,
-                country,
-                birthDate
+                // phone,
+                // gender,
+                // country,
+                // birthDate
             }
 
             //creamos el usuario y lo guardamos en la DB
