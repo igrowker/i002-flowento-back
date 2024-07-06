@@ -36,7 +36,7 @@ export const updateUser = async(body)=>{
         where : {
             email: email
         },
-        data : body
+        data : {...body}
     })
 
     return updatedUser;

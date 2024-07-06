@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { findIndex } from '../utils.js';
-import { getUsers } from '../models/User.js';
+import { deleteUser, getUserByEmail, getUsers, updateUser } from '../models/User.js';
 
 class User {
     static allUsers = async (req, res) => {
@@ -16,16 +16,18 @@ class User {
         }
     }
 
-    static getUserById = async (req, res) => {
+    static getUserByEmail = async (req, res) => {
         try {
-            const id = req.params.id; //se podria obtener del body todo depende de como se haga el formulario en el front
+            //ESTO DE MOMENTO ASI POR PARAMTRO LUEGO CUANDO EN EL FRONT ESTE LA VISTA DE ADMIN PARA BUSCAR INFO O BORRAR USUARIOS
+            //lo ideal seria un formulario q venga del front y sacarlo del body
+            const email = req.params.email; //se podria obtener del body todo depende de como se haga el formulario en el front
 
-            const userFind = arrayUsers.find(user => user.id !== id);
+            const userFind = await getUserByEmail(email);
 
-            if (userFind === undefined) {
+            if (!userFind) {
                 return res.status(400).send({
                     status: "error",
-                    payload: `El usuario con el ID: ${id} no se a encontrado`
+                    payload: `El usuario con el EMAIL: ${email} no se a encontrado`
                 });
             }
 
@@ -38,25 +40,28 @@ class User {
         }
     }
 
-    static updateUserById = async (req, res) => {
+    static updateUserByEmail = async (req, res) => {
         try {
-            const id = req.params.id;
-            
-            const userIndex = findIndex(id,arrayUsers);
+            const email = req.params.email;
 
-            if (userIndex === -1) {
+            const userFind = await getUserByEmail(email);
+
+            if (!userFind) {
                 return res.status(400).send({
                     status: "error",
-                    payload: `El usuario con el ID: ${id} no se a encontrado`
+                    payload: `El usuario con el EMAIL: ${email} no se a encontrado`
                 });
             }
 
-            arrayUsers[userIndex] = {...req.body}; //capaz esto hay q convertirlo a javascript xq te viene un json, provicional mientras esta la db
-            // tambien puede variar loa asignacion dependiendo de como se haga el formulario en el front, si se mandan todos los campos o solo los q se modificican
+            const user = {
+                ...req.body
+            }
+
+            const updatedUser = await updateUser(user);
 
             res.send({
                 status: "success",
-                payload: arrayUsers[userIndex]
+                payload: updatedUser
             })
 
         } catch (error) {
@@ -64,27 +69,28 @@ class User {
         }
     }
 
-    static deleteUserById = async (req, res) => {
+    static deleteUserByEmail = async (req, res) => {
         try {
 
-            const id = req.params.id;
+            const email = req.params.email;
 
-            const userIndex = findIndex(id,arrayUsers);
 
-            if (userIndex === -1) {
+            const userFind = await getUserByEmail(email);
+
+            if (!userFind) {
                 return res.status(400).send({
                     status: "error",
-                    payload: `El usuario con el ID: ${id} no se a encontrado`
+                    payload: `El usuario con el EMAIL: ${email} no se a encontrado`
                 });
             }
 
-            arrayUsers.splice(userIndex,1);
+            const deletedUser = await deleteUser(email);
 
             res.send({
                 status: "success",
                 payload: {
-                    msg: `El usuario con el ID: ${id} se elimino con exito`,
-                    data: arrayUsers
+                    msg: `El usuario con el EMAIL: ${email} se elimino con exito`,
+                    data: deletedUser
                 }
             })
 
