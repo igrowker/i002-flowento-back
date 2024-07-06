@@ -9,10 +9,11 @@ const router = Router();
 router.get("/", User.allUsers);
 
 //id de momento se podria buscar por email o otra cosa
-router.get("/:email", User.getUserByEmail);
+// router.get("/:email",  checkRol(["admin"]), User.getUserByEmail);
+router.get("/:email",  User.getUserByEmail);
 
-router.put("/:email", User.updateUserByEmail);
+router.put("/:email",  checkRol(["admin"]), User.updateUserByEmail);
 
-router.delete("/:email",User.deleteUserByEmail);
+router.delete("/:email", checkRol(["admin"]), User.deleteUserByEmail);
 
 export default router;

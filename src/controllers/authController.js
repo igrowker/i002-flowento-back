@@ -11,6 +11,8 @@ class AuthController {
         try {
             const { email, password } = req.body;
 
+            console.log(req.body);
+
             if (!email) {
                 return res.status(400).send({
                     status: "error",
@@ -25,37 +27,58 @@ class AuthController {
                 });
             }
 
-            const user = await getUserByEmail(email);
-
-            const isValid = await isValidPassword(password, user);
-
-            if (!isValid) {
-                return res.status(400).send({
-                    status : "error",
-                    payload : "La contraseña es invalida"
-                })
+            let user = {
+                email,
+                rol : "user"
             }
 
             if (options.ADMIN_EMAIL === email && options.ADMIN_PASSWORD === password) {
+                console.log("es admin");
+
                 user = {
                     email,
                     rol: "admin"
                 }
             }
-            else{
+            else {
+                const userFind = await getUserByEmail(email);
+
+                console.log(userFind);
+
+                if (!userFind) {
+                    return res.status(400).send({
+                        status: "error",
+                        payload: "El usuari no se encuentra registrado"
+                    })
+                }
+
+                const {user_id} = userFind;
+
+                const isValid = await isValidPassword(password, user);
+
+                if (!isValid) {
+                    return res.status(400).send({
+                        status: "error",
+                        payload: "La contraseña es invalida"
+                    })
+                }
+
                 user = {
+                    id : user_id,
                     email,
-                    rol : "user"
+                    rol: "user"
                 }
             }
-            
+
 
             const token = jwt.sign(user, "jwt-secret-word", { expiresIn: "8h" }); //el exprire podriamos sacarlo, es mas q nada para q se te desconecte automaticamente pasada cierta cantidad de tiempo
+
+            console.log(token);
 
             //setamos la cookie
             //con maxAge indicamos el tiempo de vida osea cuando expira
             //HttpOnly atributo de navegador creado para impedir que las aplicaciones del lado del cliente, creo q ademas evita q puedas sobreescribir la cookie (osea si la modificas q te tire de la pagina y te mande al login devuelta)
-            res.cookie("jwt-cookie", token, { HttpOnly: true, maxAge: 900000 }).send({
+            res.cookie("jwt-cookie", token, { httpOnly: true, maxAge: 3600000 }).json({
                 status: "success",
                 payload: token
             });
@@ -101,7 +124,8 @@ class AuthController {
             const hashPassword = await createHashPassword(password);
 
             const user = {
-                name: `${first_name} ${last_name}`,
+                first_name,
+                last_name,
                 email,
                 password: hashPassword,
                 // phone,

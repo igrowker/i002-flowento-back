@@ -80,8 +80,8 @@ model Event {
   userId           Int
   name             String
   description      String
-  start_date       DateTime
-  end_date         DateTime
+  start_date       String
+  end_date         String
   max_capacity     Int
   current_capacity Int
   type             Type

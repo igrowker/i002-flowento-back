@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import { findIndex } from '../utils.js';
 import { deleteUser, getUserByEmail, getUsers, updateUser } from '../models/User.js';
 
 class User {
@@ -71,9 +70,7 @@ class User {
 
     static deleteUserByEmail = async (req, res) => {
         try {
-
             const email = req.params.email;
-
 
             const userFind = await getUserByEmail(email);
 
