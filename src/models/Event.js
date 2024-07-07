@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { createFeedback } from './Feedback.js';
 
 const prisma = new PrismaClient();
 
@@ -53,4 +54,37 @@ export const deleteEvent = async (id) => {
     })
 
     return deletedEvent;
+}
+
+export const registerEvent = async (id) => {
+    const deletedEvent = await eventDB.delete({
+        where: {
+            id_event: id
+        }
+    })
+
+    return deletedEvent;
+}
+
+export const attendEvent = async (id) => {
+    const deletedEvent = await eventDB.delete({
+        where: {
+            id_event: id
+        }
+    })
+
+    return deletedEvent;
+}
+
+export const feedbackEvent = async (body) => {
+    const {user_id,event_id,comment,rating} = body;
+
+    const createdFeedback = await createFeedback({
+        userId : user_id,
+        eventId : event_id,
+        comment,
+        rating,
+    })
+
+    return createdFeedback;
 }

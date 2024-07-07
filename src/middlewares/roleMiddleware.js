@@ -7,13 +7,6 @@ export const checkRol = (roles)=>{
 
         const decodedInfo = jwt.decode(tokenInfo);
 
-        if (!decodedInfo) {
-            return res.status(404).send({
-                status : "error",
-                payload : "El usuario no inicio secion"
-            })
-        }
-
         if (!roles.includes(decodedInfo.rol)) {
             return res.status(401).send({
                 status : "error",

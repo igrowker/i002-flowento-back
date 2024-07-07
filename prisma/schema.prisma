@@ -122,7 +122,7 @@ model Feedback {
   eventId       Int
   comment       String
   rating        Int
-  feedback_date DateTime
+  feedback_date DateTime @default(now())
 }
 
 // Usuarios - Notificaciones: (1:N) Un usuario puede recibir múltiples notificaciones, pero

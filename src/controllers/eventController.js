@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
-import { createEvent, deleteEvent, getEventById, getEvents, updateEvent } from "../models/Event.js";
+import { createEvent, deleteEvent, feedbackEvent, getEventById, getEvents, updateEvent } from "../models/Event.js";
+import { getUserByEmail } from "../models/User.js";
 
 class Event {
     static getEvents = async (req, res) => {
@@ -62,7 +63,7 @@ class Event {
             const id_user = 1;
 
             const eventInfo = {
-                userId : id_user,
+                userId: id_user,
                 ...req.body,
             }
 
@@ -100,7 +101,7 @@ class Event {
             }
 
             const event = {
-                id_event : parseInt(id), 
+                id_event: parseInt(id),
                 ...req.body,
             }
 
@@ -160,7 +161,34 @@ class Event {
 
     static submitFeedback = async (req, res) => {
         try {
+            const id_event = req.params.id;
+            const { comment, rating } = req.body;
 
+            //descomentalo cuando este el form del front listo
+            // const tokenInfo = req.cookies["jwt-cookie"];
+            
+            // const decodedInfo = jwt.decode(tokenInfo);
+            
+            // const {email} = decodedInfo;
+            const email = "tino@gmail.com";
+
+            const user = await getUserByEmail(email);
+            
+            const {id_user} = user
+
+            const data = {
+                user_id : id_user,
+                event_id : parseInt(id_event),
+                comment,
+                rating
+            }
+
+            const feedback = await feedbackEvent(data);
+
+            res.send({
+                stauts: "success",
+                payload: feedback
+            })
         } catch (error) {
             console.log(error);
         }
