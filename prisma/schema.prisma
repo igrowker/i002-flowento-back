@@ -63,9 +63,8 @@ model User {
 model Provider {
   id_provider Int @id @default(autoincrement())
 
-  user_id User @relation(fields: [userId], references: [id_user]) //fields: [userId] donde guarda el dato, references: [id_user] referencia al campo/columna de la tabla Usuarios
-  userId  Int
-
+  user_id     User   @relation(fields: [userId], references: [id_user]) //fields: [userId] donde guarda el dato, references: [id_user] referencia al campo/columna de la tabla Usuarios
+  userId      Int
   name        String
   description String
   service     String
@@ -86,7 +85,7 @@ model Event {
   current_capacity Int
   type             Type
   online_link      Boolean
-  state            State
+  state            State         @default(pending)
   creation_date    DateTime      @default(now())
   inscription      Inscription[]
   feedback         Feedback[]
@@ -105,7 +104,7 @@ model Inscription {
   userId               Int
   event_id             Event                @relation(fields: [eventId], references: [id_event])
   eventId              Int
-  attendance_confirmed Attendance_confirmed
+  attendance_confirmed Attendance_confirmed @default(no)
   registration_date    DateTime             @default(now())
 }
 

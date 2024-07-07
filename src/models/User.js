@@ -21,6 +21,16 @@ export const getUserByEmail = async(email)=>{
     return user;
 }
 
+export const getUserById = async(id)=>{
+    const user = await userDB.findUnique({
+        where : {
+            id_user : id
+        }
+    })
+
+    return user;
+}
+
 export const createUser = async(body)=>{
     const newUser = await userDB.create({
         data : body

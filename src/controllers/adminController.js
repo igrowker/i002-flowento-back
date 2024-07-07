@@ -1,4 +1,4 @@
-import { getEventById, getEvents, updateEvent } from "../models/Event.js";
+import { attendEvent, getEventById, getEvents, updateEvent } from "../models/Event.js";
 
 class Admin {
     static getPendingEvents = async (req, res) => {
@@ -49,6 +49,7 @@ class Admin {
     static reportEvent = async (req, res) => {
         try {
             const events = await getEvents();
+            // const attend = await attendEvent();
 
             const reports = [];
 

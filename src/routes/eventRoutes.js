@@ -24,7 +24,7 @@ router.delete("/:id", Event.deleteEvent);
 router.post("/register", Event.registerForEvent);
 
 // router.put("/attend",authCheck(), Event.confirmAttendance);
-router.put("/attend", Event.confirmAttendance);
+router.put("/attend/:id", Event.confirmAttendance);
 
 // router.post("/feedback",authCheck(), Event.submitFeedback);
 router.post("/feedback/:id", Event.submitFeedback);

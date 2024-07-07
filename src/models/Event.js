@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { createFeedback } from './Feedback.js';
+import { createInscription, updateInscription } from './Registration.js';
 
 const prisma = new PrismaClient();
 
@@ -56,24 +57,16 @@ export const deleteEvent = async (id) => {
     return deletedEvent;
 }
 
-export const registerEvent = async (id) => {
-    const deletedEvent = await eventDB.delete({
-        where: {
-            id_event: id
-        }
-    })
+export const registerEvent = async (body) => {
+    const registeredEvent = await createInscription(body);
 
-    return deletedEvent;
+    return registeredEvent;
 }
 
-export const attendEvent = async (id) => {
-    const deletedEvent = await eventDB.delete({
-        where: {
-            id_event: id
-        }
-    })
+export const attendEvent = async (body) => {
+    const attendedEvent = await updateInscription(body);
 
-    return deletedEvent;
+    return attendedEvent;
 }
 
 export const feedbackEvent = async (body) => {

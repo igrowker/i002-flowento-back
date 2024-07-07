@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import { createEvent, deleteEvent, feedbackEvent, getEventById, getEvents, updateEvent } from "../models/Event.js";
-import { getUserByEmail } from "../models/User.js";
+import { attendEvent, createEvent, deleteEvent, feedbackEvent, getEventById, getEvents, registerEvent, updateEvent } from "../models/Event.js";
+import { getUserByEmail, getUserById } from "../models/User.js";
 
 class Event {
     static getEvents = async (req, res) => {
@@ -68,8 +68,6 @@ class Event {
             }
 
             const event = await createEvent(eventInfo);
-
-            console.log(event);
 
             if (!event) {
                 return res.status(400).send({
@@ -146,6 +144,47 @@ class Event {
     static registerForEvent = async (req, res) => {
         try {
 
+            //el id del evento me lo tiene q mandar desde el front y el id del usuario puede ser desde el fornt o jwt
+            //o q te manden el email desde el front para buscarlo desde aca
+            const { userId, eventId, attendance_confirmed } = req.body;
+
+            if (!userId || !eventId || !attendance_confirmed) {
+                return res.status(400).send({
+                    status: "error",
+                    payload: "Datos incompletos"
+                });
+            }
+
+            const user = await getUserById(parseInt(userId));
+
+            if (!user) {
+                return res.status(400).send({
+                    status: "error",
+                    payload: `El usuario con el ID: ${userId} no se a encontrado`,
+                });
+            }
+
+            const event = await getEventById(parseInt(eventId));
+
+            if (!event) {
+                return res.status(400).send({
+                    status: "error",
+                    payload: `El evento con el ID: ${eventId} no se a encontrado`,
+                });
+            }
+
+            const insciptionInfo = {
+                userId : parseInt(userId),
+                eventId : parseInt(eventId),
+                attendance_confirmed
+            }
+
+            const regEvent = await registerEvent(insciptionInfo);
+
+            res.send({
+                status: "success",
+                payload: regEvent
+            })
         } catch (error) {
             console.log(error);
         }
@@ -153,7 +192,47 @@ class Event {
 
     static confirmAttendance = async (req, res) => {
         try {
+            const id_registration = req.params.id;
+            const { userId, eventId, attendance_confirmed } = req.body;
 
+            if (!userId || !eventId || !attendance_confirmed) {
+                return res.status(400).send({
+                    status: "error",
+                    payload: "Datos incompletos"
+                });
+            }
+
+            const user = await getUserById(parseInt(userId));
+
+            if (!user) {
+                return res.status(400).send({
+                    status: "error",
+                    payload: `El usuario con el ID: ${userId} no se a encontrado`,
+                });
+            }
+
+            const event = await getEventById(parseInt(eventId));
+
+            if (!event) {
+                return res.status(400).send({
+                    status: "error",
+                    payload: `El evento con el ID: ${eventId} no se a encontrado`,
+                });
+            }
+
+            const data = {
+                id_registration : parseInt(id_registration),
+                userId : parseInt(userId),
+                eventId : parseInt(eventId),
+                attendance_confirmed
+            }
+
+            const attEven = await attendEvent(data);
+
+            res.send({
+                status: "success",
+                payload: attEven
+            })
         } catch (error) {
             console.log(error);
         }
@@ -166,19 +245,19 @@ class Event {
 
             //descomentalo cuando este el form del front listo
             // const tokenInfo = req.cookies["jwt-cookie"];
-            
+
             // const decodedInfo = jwt.decode(tokenInfo);
-            
+
             // const {email} = decodedInfo;
             const email = "tino@gmail.com";
 
             const user = await getUserByEmail(email);
-            
-            const {id_user} = user
+
+            const { id_user } = user
 
             const data = {
-                user_id : id_user,
-                event_id : parseInt(id_event),
+                user_id: id_user,
+                event_id: parseInt(id_event),
                 comment,
                 rating
             }
