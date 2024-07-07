@@ -11,9 +11,11 @@ export const getEvents = async () => {
 }
 
 export const getEventById = async (id) => {
+    const parseId = parseInt(id);
+
     const event = await eventDB.findUnique({
         where: {
-            id_event: id
+            id_event: parseId
         }
     })
 
@@ -21,8 +23,6 @@ export const getEventById = async (id) => {
 }
 
 export const createEvent = async (body) => {
-    console.log(body);
-
     const newEvent = await eventDB.create({
         data: body
     })
@@ -31,13 +31,15 @@ export const createEvent = async (body) => {
 }
 
 export const updateEvent = async (body) => {
-    const { id } = body;
+    const {id_event} = body;
 
     const updatedEvent = await eventDB.update({
         where: {
-            id_event: id
+            id_event: id_event
         },
-        data: { ...body }
+        data: { 
+            ...body
+        }
     })
 
     return updatedEvent;
@@ -45,7 +47,6 @@ export const updateEvent = async (body) => {
 
 export const deleteEvent = async (id) => {
     const deletedEvent = await eventDB.delete({
-
         where: {
             id_event: id
         }

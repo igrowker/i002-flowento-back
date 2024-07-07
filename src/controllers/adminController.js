@@ -1,29 +1,15 @@
-import { findIndex } from '../utils.js';
-
-const arrayEvents = [
-    {
-        id: 1,
-        name: "evento1",
-        approve : false,
-    },
-    {
-        id: 2,
-        name: "evento2",
-        approve : false,
-    },
-    {
-        id: 3,
-        name: "evento3",
-        approve : false,
-    }
-]
+import { getEventById, getEvents, updateEvent } from "../models/Event.js";
 
 class Admin {
-    static getAllEvents = async (req, res) => {
+    static getPendingEvents = async (req, res) => {
         try {
+            const events = await getEvents();
+
+            const pendingEvents = events.filter(event => event.state === "pending");
+
             res.send({
                 status: "success",
-                payload: arrayEvents
+                payload: pendingEvents
             })
         } catch (error) {
             console.log(error);
@@ -34,25 +20,25 @@ class Admin {
         try {
             const id = req.params.id;
 
-            const eventIndex = findIndex(id,arrayEvents);
+            const eventFind = await getEventById(id);
 
-            if (eventIndex === -1) {
+            if (!eventFind) {
                 return res.status(400).send({
-                    status : "error",
-                    payload : `No se encontro el evento con el ID : ${id}`
+                    status: "error",
+                    payload: `El evento con el ID: ${id} no se a encontrado`
                 });
             }
 
-            const {approve} = req.body;
+            const event = {
+                id_event : parseInt(id), 
+                ...req.body,
+            }
 
-            arrayEvents[eventIndex].approve = approve;
-            
+            const updatedEvent = await updateEvent(event);
+
             res.send({
-                status : "success",
-                payload : {
-                    msg : `Se aprobo el evento con el ID: ${id}`,
-                    data : arrayEvents[eventIndex]
-                }
+                status: "success",
+                payload: updatedEvent
             })
 
         } catch (error) {
@@ -62,11 +48,28 @@ class Admin {
 
     static reportEvent = async (req, res) => {
         try {
-            //aca supongo q sera con Chart.js para generar los graficos
+            const events = await getEvents();
+
+            const reports = [];
+
+            //ACA VA A FALTAR HACER EL MODELO DE INSCRIPCIONES Q AHI OBTENES CUANTA GENTE DICE Q VA Y CUANTOS TERMINAN LLENDO
+            for (let i = 0; i < events.length; i++) {
+                const element = events[i];
+                
+                const aux = {
+                    id_event : element.id_event,
+                    name : element.name,
+                    attendance_confirmed : "esto vas a tener q sacorlo una ves este heco el insciptios o puede ser la diferencia entre max_capacity - current_capacity",
+                    max_capacity : element.max_capacity,
+                    current_capacity : element.current_capacity,
+                }
+
+                reports.push(aux);
+            }
 
             res.send({
                 status : "success",
-                payload : "mensaje provicinal"
+                payload : reports
             })
         } catch (error) {
             console.log(error);

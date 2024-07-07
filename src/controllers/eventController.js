@@ -46,6 +46,13 @@ class Event {
             //esto xq la fecha la estoy pasando como string en formato yyyy-mm-dd
             const regExDate = /^\d{4}-\d{2}-\d{2}$/;
 
+            if (!start_date.match(regExDate) || !end_date.match(regExDate)) {
+                return res.status(400).send({
+                    status: "error",
+                    payload: "El formato de la fecha debe de ser yyyy-mm-dd"
+                });
+            }
+
             //esto cuando este el form del front listo agregalo, de momento lo saco del body pero la idea es obtenerlo del token
             // const tokenInfo = req.cookies["jwt-cookie"];
 
@@ -93,7 +100,8 @@ class Event {
             }
 
             const event = {
-                ...req.body
+                id_event : parseInt(id), 
+                ...req.body,
             }
 
             const updatedEvent = await updateEvent(event);
@@ -120,12 +128,12 @@ class Event {
                 });
             }
 
-            const deletedEvent = await deleteEvent(id);
+            const deletedEvent = await deleteEvent(parseInt(id));
 
             res.send({
                 status: "success",
                 payload: {
-                    msg: `El usuario con el ID: ${id} se elimino con exito`,
+                    msg: `El evento con el ID: ${id} se elimino con exito`,
                     data: deletedEvent
                 }
             })

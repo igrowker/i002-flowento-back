@@ -20,7 +20,7 @@ enum Type {
 
 enum State {
   pending
-  fulfilled
+  approve
   rejected
 }
 
