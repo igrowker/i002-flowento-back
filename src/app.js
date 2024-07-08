@@ -44,3 +44,5 @@ app.use("/events", evnetRoutes);
 // });
 
 const server = app.listen(PORT, serverCallback);
+
+initWebSockets(server);
