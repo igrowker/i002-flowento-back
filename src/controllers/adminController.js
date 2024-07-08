@@ -60,7 +60,7 @@ class Admin {
                 const aux = {
                     id_event : element.id_event,
                     name : element.name,
-                    attendance_confirmed : "esto vas a tener q sacorlo una ves este heco el insciptios o el qr o puede ser la diferencia entre max_capacity - current_capacity",
+                    attendance_confirmed : parseInt(max_capacity) - parseInt(current_capacity),
                     max_capacity : element.max_capacity,
                     current_capacity : element.current_capacity,
                 }

@@ -1,6 +1,9 @@
 import jwt from "jsonwebtoken";
 import { attendEvent, createEvent, deleteEvent, feedbackEvent, getEventById, getEvents, registerEvent, updateEvent } from "../models/Event.js";
 import { getUserByEmail, getUserById } from "../models/User.js";
+import { emailSender } from "../utilities/emailService.js";
+
+
 
 class Event {
     static getEvents = async (req, res) => {
@@ -44,6 +47,15 @@ class Event {
         try {
             const { start_date, end_date } = req.body;
 
+            // const tokenInfo = req.cookies["jwt-cookie"];
+
+            // const decodedInfo = jwt.decode(tokenInfo);
+
+            // const { id, email, rol } = decodedInfo;
+
+            const id = 1;
+            const email = "flowentoa@gmail.com";
+
             //esto xq la fecha la estoy pasando como string en formato yyyy-mm-dd
             const regExDate = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -54,16 +66,8 @@ class Event {
                 });
             }
 
-            //esto cuando este el form del front listo agregalo, de momento lo saco del body pero la idea es obtenerlo del token
-            // const tokenInfo = req.cookies["jwt-cookie"];
-
-            // const decodedInfo = jwt.decode(tokenInfo);
-
-            //valor hardcodeado para probar
-            const id_user = 1;
-
             const eventInfo = {
-                userId: id_user,
+                userId: id,
                 ...req.body,
             }
 
@@ -75,6 +79,8 @@ class Event {
                     payload: "No se logro crear el evento"
                 });
             }
+
+            const response = await emailSender(email, "Tu evento fue creado con exito", "Creacion de evento");
 
             res.send({
                 status: "success",
@@ -143,24 +149,30 @@ class Event {
 
     static registerForEvent = async (req, res) => {
         try {
+            const { eventId } = req.body;
 
-            //el id del evento me lo tiene q mandar desde el front y el id del usuario puede ser desde el fornt o jwt
-            //o q te manden el email desde el front para buscarlo desde aca
-            const { userId, eventId, attendance_confirmed } = req.body;
+            // const tokenInfo = req.cookies["jwt-cookie"];
 
-            if (!userId || !eventId || !attendance_confirmed) {
+            // const decodedInfo = jwt.decode(tokenInfo);
+
+            // const { id, email, rol } = decodedInfo;
+
+            const id = 1;
+            const email = "uliisesrodriguez809@gmail.com";
+
+            if (!eventId) {
                 return res.status(400).send({
                     status: "error",
                     payload: "Datos incompletos"
                 });
             }
 
-            const user = await getUserById(parseInt(userId));
+            const user = await getUserById(parseInt(id));
 
             if (!user) {
                 return res.status(400).send({
                     status: "error",
-                    payload: `El usuario con el ID: ${userId} no se a encontrado`,
+                    payload: `El usuario con el ID: ${id} no se a encontrado`,
                 });
             }
 
@@ -174,12 +186,21 @@ class Event {
             }
 
             const insciptionInfo = {
-                userId : parseInt(userId),
-                eventId : parseInt(eventId),
-                attendance_confirmed
+                userId: parseInt(id),
+                eventId: parseInt(eventId),
+                attendance_confirmed: "no"
             }
 
             const regEvent = await registerEvent(insciptionInfo);
+
+            if (!regEvent) {
+                return res.status(400).send({
+                    status: "error",
+                    payload: `No se logro completar el registro al evento con el ID: ${eventId}`,
+                });
+            }
+
+            const response = await emailSender(email, "Te incirbiste con exito al evento", "Registro al evento");
 
             res.send({
                 status: "success",
@@ -193,21 +214,30 @@ class Event {
     static confirmAttendance = async (req, res) => {
         try {
             const id_registration = req.params.id;
-            const { userId, eventId, attendance_confirmed } = req.body;
+            const { eventId, attendance_confirmed } = req.body;
 
-            if (!userId || !eventId || !attendance_confirmed) {
+            // const tokenInfo = req.cookies["jwt-cookie"];
+
+            // const decodedInfo = jwt.decode(tokenInfo);
+
+            // const { id, email, rol } = decodedInfo;
+
+            const id = 1;
+            const email = "uliisesrodriguez809@gmail.com";
+
+            if (!eventId || !attendance_confirmed) {
                 return res.status(400).send({
                     status: "error",
                     payload: "Datos incompletos"
                 });
             }
 
-            const user = await getUserById(parseInt(userId));
+            const user = await getUserById(parseInt(id));
 
             if (!user) {
                 return res.status(400).send({
                     status: "error",
-                    payload: `El usuario con el ID: ${userId} no se a encontrado`,
+                    payload: `El usuario con el ID: ${id} no se a encontrado`,
                 });
             }
 
@@ -221,13 +251,22 @@ class Event {
             }
 
             const data = {
-                id_registration : parseInt(id_registration),
-                userId : parseInt(userId),
-                eventId : parseInt(eventId),
+                id_registration: parseInt(id_registration),
+                userId: parseInt(id),
+                eventId: parseInt(eventId),
                 attendance_confirmed
             }
 
             const attEven = await attendEvent(data);
+
+            if (!attEven) {
+                return res.status(400).send({
+                    status: "error",
+                    payload: `No se logro completar confirmar la inscipcion al evento con el ID: ${eventId}`,
+                });
+            }
+
+            const response = await emailSender(email, "Te incirbiste con exito al evento", "Registro al evento");
 
             res.send({
                 status: "success",

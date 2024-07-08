@@ -1,17 +1,16 @@
 // authController.js: Maneja la autenticación y registro de usuarios
 import jwt from 'jsonwebtoken';
 // import {optionsUser} from '../models/User.js';
-import { getUsers, getUserByEmail, createUser } from '../models/User.js';
+import { getUsers, getUserByEmail, createUser, updateUser } from '../models/User.js';
 import { createHashPassword, isValidPassword } from '../utils.js'
 import { options } from '../config/config.js';
+import { emailSender, generateEmailToken, sendRecoverPassword } from '../utilities/emailService.js';
 
 
 class AuthController {
     static login = async (req, res) => {
         try {
             const { email, password } = req.body;
-
-            console.log(req.body);
 
             if (!email) {
                 return res.status(400).send({
@@ -33,8 +32,6 @@ class AuthController {
             }
 
             if (options.ADMIN_EMAIL === email && options.ADMIN_PASSWORD === password) {
-                console.log("es admin");
-
                 user = {
                     email,
                     rol: "admin"
@@ -42,8 +39,6 @@ class AuthController {
             }
             else {
                 const userFind = await getUserByEmail(email);
-
-                console.log(userFind);
 
                 if (!userFind) {
                     return res.status(400).send({
@@ -92,8 +87,6 @@ class AuthController {
         try {
             const { first_name, last_name, email, password, passwordRepeat } = req.body;
 
-            console.log(req.body);
-
             const DB = await getUsers();
 
             //check para ver si falta algun dato
@@ -127,15 +120,13 @@ class AuthController {
                 first_name,
                 last_name,
                 email,
-                password: hashPassword,
-                // phone,
-                // gender,
-                // country,
-                // birthDate
+                password: hashPassword
             }
 
             //creamos el usuario y lo guardamos en la DB
             const newUser = await createUser(user);
+
+            const response = await emailSender(email, "Te incirbiste con exito al evento", "Registro al evento");
 
             res.send({
                 status: "success",
@@ -144,6 +135,107 @@ class AuthController {
 
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    static logout = async (req, res) => {
+        try {
+            if (req.cookies[process.env.COOKIE_WORD]) {
+
+                res.clearCookie(process.env.COOKIE_WORD);
+
+                res.redirect('/');
+
+            } else {
+                res.status(401).send({
+                    status: "error",
+                    payload: "No se logro desloguear con exito"
+                })
+            }
+        } catch (error) {
+            res.status(500).send({
+                status: "error",
+                message: "No se logro cerrar sesion"
+            })
+        }
+    }
+
+    static revocerPassword = async (req, res) => {
+        try {
+            const { email } = req.body;
+            const hostname = req.hostname;
+
+            // para porbarlo ponele 60 segundos pero para el desafio ponele 3600
+            const tokenEmail = generateEmailToken(email, 3600);
+
+            const respond = await sendRecoverPassword(email, tokenEmail, hostname);
+
+            if (!respond) {
+                return res.status(400).send({
+                    status: "error",
+                    payload: "No se logro enviar el mail para restrablecer la contraseña"
+                })
+            }
+
+            res.send({
+                status: "success",
+                payload: "email enviado con exito"
+            })
+
+        } catch (error) {
+            res.status(400).send({
+                status: "error",
+                payload: "Usuario ya registrado"
+            })
+        }
+    }
+
+    static resetPassword = async (req, res) => {
+        try {
+            const {email, password, confirmPassword } = req.body;
+
+            if (password !== confirmPassword) {
+                return res.status(400).send({
+                    status: "error",
+                    payload: "Las contraseñas no coinciden"
+                });
+            }
+
+            const user = await getUserByEmail(email);
+
+            const samePassword = await isValidPassword(password, user);
+
+            // si la contraseña es la misma q esta guardada en la DB, indicamos q no puede repetir la misma contraseña
+            if (samePassword) {
+                return res.status(400).send({
+                    status: "error",
+                    payload: "Error, esta contraseña ya fue usada anteriormente"
+                });
+            }
+
+            const newPassword = await createHash(password);
+
+            user.password = newPassword;
+
+            const userUpdated = await updateUser(user);
+
+            if (!userUpdated) {
+                return res.status(400).send({
+                    status: "error",
+                    payload: "Error, no se logro actulizar los datos del usuario"
+                });
+            }
+
+            res.send({
+                status: "success",
+                payload: "todo bien"
+            })
+
+        } catch (error) {
+            res.status(400).send({
+                status: "error",
+                payload: "No se logro cambiar la contraseña"
+            })
         }
     }
 }
