@@ -9,7 +9,7 @@ import adminRoutes from './routes/adminRoutes.js';
 import evnetRoutes from './routes/eventRoutes.js';
 import { initWebSockets, serverCallback } from './server.js';
 
-// indicamos en el puerto que queremos q corra el server (puede ser cualquier numero q no este ocupado)
+// indicamos en el puerto que queremos q corra el server (puede ser cualquier numero q no este ocupad)
 const PORT = options.PORT || 8080;
 
 // inicializamos express
