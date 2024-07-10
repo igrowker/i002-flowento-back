@@ -11,7 +11,7 @@ router.get("/", authCheck(), checkRol(["admin"]), Space.allSpaces);
 // router.get("/:id", authCheck(), checkRol(["admin"]), User.getUserByEmail);
 router.get("/:id", authCheck(), checkRol(["admin"]), Space.getSpaceById);
 
-router.get("/", authCheck(), checkRol(["admin"]), Space.createSpace);
+router.post("/", authCheck(), checkRol(["admin"]), Space.createSpace);
 
 router.put("/:id", authCheck(), checkRol(["admin"]), Space.updateSpace);
 

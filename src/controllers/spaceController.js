@@ -5,6 +5,13 @@ class Space {
         try {
             const spaces = await getSpaces();
 
+            if (!spaces) {
+                return res.status(400).send({
+                    status: "error",
+                    payload: "No se logro obtener los espacios para los eventos"
+                });
+            }
+
             res.send({
                 stattus: "success",
                 payload: spaces
@@ -20,6 +27,13 @@ class Space {
 
             const space = await getSpaceById(parseInt(id));
 
+            if (!space) {
+                return res.status(400).send({
+                    status: "error",
+                    payload: `El spacio con el ID: ${id} no se a encontrado`
+                });
+            }
+
             res.send({
                 stattus: "success",
                 payload: space
@@ -33,6 +47,13 @@ class Space {
         try {
 
             const space = await createSpace();
+
+            if (!space) {
+                return res.status(400).send({
+                    status: "error",
+                    payload: "Error al intentar crear un nuevo espacio para eventos"
+                });
+            }
 
             res.send({
                 stattus: "success",
