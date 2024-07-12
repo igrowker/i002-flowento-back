@@ -5,7 +5,7 @@ import { authCheck } from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
-router.get("/events", authCheck(),checkRol(["admin"]), Admin.getAllEvents);
+router.get("/events", authCheck(),checkRol(["admin"]), Admin.getPendingEvents);
 // router.get("/events", Admin.getPendingEvents);
 
 router.put("/events/aprove/:id", authCheck(),checkRol(["admin"]), Admin.approveEvent);

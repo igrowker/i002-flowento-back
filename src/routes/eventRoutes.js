@@ -5,11 +5,11 @@ import { authCheck } from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
-router.get("/", authCheck(), Event.getEvents);
-// router.get("/", Event.getEvents);
+// router.get("/", authCheck(), Event.getEvents);
+router.get("/", Event.getEvents);
 
-router.get("/:id", authCheck(), Event.getEventById);
-// router.get("/:id", Event.getEventById);
+// router.get("/:id", authCheck(), Event.getEventById);
+router.get("/:id", Event.getEventById);
 
 router.post("/", authCheck(),checkRol(["admin","organizador","user"]),Event.createEvent);
 // router.post("/", Event.createEvent);

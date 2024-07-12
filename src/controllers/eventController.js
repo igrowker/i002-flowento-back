@@ -25,6 +25,8 @@ class Event {
 
             const event = await getEventById(id);
 
+            console.log(event)
+
             if (!event) {
                 return res.status(400).send({
                     status: "error",
