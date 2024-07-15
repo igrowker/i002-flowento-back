@@ -6,6 +6,13 @@ class User {
         try {
             const users = await getUsers();
 
+            if (!users) {
+                return res.status(500).send({
+                    status : "error",
+                    payload : "Error, no se logro obtener los usuarios"
+                })
+            }
+
             res.send({
                 stattus: "success",
                 payload: users
@@ -17,9 +24,7 @@ class User {
 
     static getUserByEmail = async (req, res) => {
         try {
-            //ESTO DE MOMENTO ASI POR PARAMTRO LUEGO CUANDO EN EL FRONT ESTE LA VISTA DE ADMIN PARA BUSCAR INFO O BORRAR USUARIOS
-            //lo ideal seria un formulario q venga del front y sacarlo del body
-            const email = req.params.email; //se podria obtener del body todo depende de como se haga el formulario en el front
+            const email = req.params.email;
 
             const userFind = await getUserByEmail(email);
 

@@ -68,8 +68,6 @@ class AuthController {
 
             const token = jwt.sign(user, "jwt-secret-word", { expiresIn: "8h" }); //el exprire podriamos sacarlo, es mas q nada para q se te desconecte automaticamente pasada cierta cantidad de tiempo
 
-            console.log(token);
-
             //setamos la cookie
             //con maxAge indicamos el tiempo de vida osea cuando expira
             //HttpOnly atributo de navegador creado para impedir que las aplicaciones del lado del cliente, creo q ademas evita q puedas sobreescribir la cookie (osea si la modificas q te tire de la pagina y te mande al login devuelta)

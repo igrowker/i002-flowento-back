@@ -4,8 +4,12 @@ const prisma = new PrismaClient();
 
 const feedbackDB = prisma.feedback;
 
-export const getFeedbacks = async () => {
-    const feedbacks = await feedbackDB.findMany();
+export const getFeedbacks = async (id) => {
+    const feedbacks = await feedbackDB.findMany({
+        where : {
+            eventId : id
+        }
+    });
 
     return feedbacks;
 }

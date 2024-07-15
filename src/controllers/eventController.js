@@ -2,8 +2,7 @@ import jwt from "jsonwebtoken";
 import { attendEvent, createEvent, deleteEvent, feedbackEvent, getEventById, getEvents, registerEvent, updateEvent } from "../models/Event.js";
 import { getUserByEmail, getUserById } from "../models/User.js";
 import { emailSender } from "../utilities/emailService.js";
-
-
+import { getFeedbacks } from "../models/Feedback.js";
 
 class Event {
     static getEvents = async (req, res) => {
@@ -26,6 +25,8 @@ class Event {
 
             const event = await getEventById(id);
 
+            console.log(event)
+
             if (!event) {
                 return res.status(400).send({
                     status: "error",
@@ -47,14 +48,14 @@ class Event {
         try {
             const { start_date, end_date } = req.body;
 
-            // const tokenInfo = req.cookies["jwt-cookie"];
+            const tokenInfo = req.cookies["jwt-cookie"];
 
-            // const decodedInfo = jwt.decode(tokenInfo);
+            const decodedInfo = jwt.decode(tokenInfo);
 
-            // const { id, email, rol } = decodedInfo;
+            const { id, email } = decodedInfo;
 
-            const id = 1;
-            const email = "flowentoa@gmail.com";
+            // const id = 1;
+            // const email = "flowentoa@gmail.com";
 
             //esto xq la fecha la estoy pasando como string en formato yyyy-mm-dd
             const regExDate = /^\d{4}-\d{2}-\d{2}$/;
@@ -151,14 +152,14 @@ class Event {
         try {
             const { eventId } = req.body;
 
-            // const tokenInfo = req.cookies["jwt-cookie"];
+            const tokenInfo = req.cookies["jwt-cookie"];
 
-            // const decodedInfo = jwt.decode(tokenInfo);
+            const decodedInfo = jwt.decode(tokenInfo);
 
-            // const { id, email, rol } = decodedInfo;
+            const { id, email } = decodedInfo;
 
-            const id = 1;
-            const email = "uliisesrodriguez809@gmail.com";
+            // const id = 1;
+            // const email = "uliisesrodriguez809@gmail.com";
 
             if (!eventId) {
                 return res.status(400).send({
@@ -221,14 +222,18 @@ class Event {
             const id_registration = req.params.id;
             const { eventId, userId, attendance_confirmed } = req.body;
 
-            // const tokenInfo = req.cookies["jwt-cookie"];
+            const tokenInfo = req.cookies["jwt-cookie"];
 
-            // const decodedInfo = jwt.decode(tokenInfo);
+            const decodedInfo = jwt.decode(tokenInfo);
 
-            // const { id, email, rol } = decodedInfo;
+            const { id, email, rol } = decodedInfo;
 
             // const id = 1;
+<<<<<<< HEAD
             const email = "uliisesrodriguez809@gmail.com";
+=======
+            // const email = "uliisesrodriguez809@gmail.com";
+>>>>>>> fb6ecff1c9566d3294627558204e6ddf0cf7b865
 
             if (!eventId || !attendance_confirmed) {
                 return res.status(400).send({
@@ -288,12 +293,12 @@ class Event {
             const { comment, rating } = req.body;
 
             //descomentalo cuando este el form del front listo
-            // const tokenInfo = req.cookies["jwt-cookie"];
+            const tokenInfo = req.cookies["jwt-cookie"];
 
-            // const decodedInfo = jwt.decode(tokenInfo);
+            const decodedInfo = jwt.decode(tokenInfo);
 
-            // const {email} = decodedInfo;
-            const email = "tino@gmail.com";
+            const {email} = decodedInfo;
+            // const email = "tino@gmail.com";
 
             const user = await getUserByEmail(email);
 
@@ -312,6 +317,29 @@ class Event {
                 stauts: "success",
                 payload: feedback
             })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    static getAllFeedbacks = async(req,res)=>{
+        try {
+            const id = req.params.id;
+
+            const feedbacks = await getFeedbacks(parseInt(id));
+
+            if (!feedbacks) {
+                return res.status(500).send({
+                    status : "error",
+                    payload : "No se logro obtener el feedback"
+                })
+            }
+
+            res.send({
+                status : "success",
+                payload : feedbacks
+            })
+
         } catch (error) {
             console.log(error);
         }
