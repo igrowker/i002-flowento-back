@@ -200,6 +200,11 @@ class Event {
                 });
             }
 
+            //actualizo la cantidad de lugares disponibles
+            event.current_capacity += 1;
+
+            const updatedEvent = await updateEvent(event);
+
             const response = await emailSender(email, "Te incirbiste con exito al evento", "Registro al evento");
 
             res.send({
@@ -214,7 +219,7 @@ class Event {
     static confirmAttendance = async (req, res) => {
         try {
             const id_registration = req.params.id;
-            const { eventId, attendance_confirmed } = req.body;
+            const { eventId, userId, attendance_confirmed } = req.body;
 
             // const tokenInfo = req.cookies["jwt-cookie"];
 
@@ -222,7 +227,7 @@ class Event {
 
             // const { id, email, rol } = decodedInfo;
 
-            const id = 1;
+            // const id = 1;
             const email = "uliisesrodriguez809@gmail.com";
 
             if (!eventId || !attendance_confirmed) {
@@ -232,12 +237,12 @@ class Event {
                 });
             }
 
-            const user = await getUserById(parseInt(id));
+            const user = await getUserById(parseInt(userId));
 
             if (!user) {
                 return res.status(400).send({
                     status: "error",
-                    payload: `El usuario con el ID: ${id} no se a encontrado`,
+                    payload: `El usuario con el ID: ${userId} no se a encontrado`,
                 });
             }
 
@@ -252,7 +257,7 @@ class Event {
 
             const data = {
                 id_registration: parseInt(id_registration),
-                userId: parseInt(id),
+                userId: parseInt(userId),
                 eventId: parseInt(eventId),
                 attendance_confirmed
             }

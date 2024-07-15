@@ -1,7 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 
-//PirsmaCliente para crear una conexion a la DB
-
 const prisma = new PrismaClient();
 
 const inscriptionDB = prisma.inscription;
