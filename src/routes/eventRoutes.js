@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { Event } from '../controllers/eventController.js';
 import { checkRol } from '../middlewares/roleMiddleware.js';
 import { authCheck } from '../middlewares/authMiddleware.js';
+import {uploader} from '../middlewares/uploader.js';
 
 const router = Router();
 
@@ -11,8 +12,10 @@ router.get("/", authCheck(), Event.getEvents);
 router.get("/:id", authCheck(), Event.getEventById);
 // router.get("/:id", Event.getEventById);
 
-router.post("/", authCheck(),checkRol(["admin","organizador"]),Event.createEvent);
-// router.post("/", Event.createEvent);
+//uploader.single("file") tiene q coincidir este nombre con el del input
+// router.post("/", authCheck(),checkRol(["admin","organizador"]), uploader.single("file") ,Event.createEvent);
+// router.post("/", uploader.single("file"), Event.createEvent);
+router.post("/", Event.createEvent);
 
 router.put("/:id", authCheck(), checkRol(["organizador"]), Event.updateEvent);
 // router.put("/:id", Event.updateEvent);

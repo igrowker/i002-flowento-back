@@ -3,10 +3,20 @@ import { attendEvent, createEvent, deleteEvent, feedbackEvent, getEventById, get
 import { getUserByEmail, getUserById } from "../models/User.js";
 import { emailSender } from "../utilities/emailService.js";
 import { getFeedbacks } from "../models/Feedback.js";
+import { cloudinary } from '../config/cloudinaryConfig.js';
 
 class Event {
     static getEvents = async (req, res) => {
         try {
+
+            // LO Q PODES HACER ES EN LA DB DE PRISMA GUARDAR LOS ID PUBLICOS DE LAS IMAGENES GUARDAS EN CLOUDINARY
+            // ESTO SERIA EN CREATE EVENT
+
+            //esto obtiene todas las imagenees en cloudinary en la carpeta ml_default
+            // const { resources } = await cloudinary.search.expression("folder:ml_default").sort_by("public_id", "desc").max_results(30).execute();
+
+            // const publicIds = resources.map(file => file.public_id);
+
             const events = await getEvents();
 
             res.send({
@@ -46,16 +56,21 @@ class Event {
 
     static createEvent = async (req, res) => {
         try {
-            const { start_date, end_date } = req.body;
+            //capaz tenes q modificar en app.js el urlendoded y json minuto 18:30 --> https://www.youtube.com/watch?v=Rw_QeJLnCK4&ab_channel=JamesQQuick
+            const { start_date, end_date, max_capacity, current_capacity, online_link, fileStr } = req.body;
 
-            const tokenInfo = req.cookies["jwt-cookie"];
+            // const fileStr = req.body.data;
 
-            const decodedInfo = jwt.decode(tokenInfo);
+            console.log(req.body);
 
-            const { id, email } = decodedInfo;
+            // const tokenInfo = req.cookies["jwt-cookie"];
 
-            // const id = 1;
-            // const email = "flowentoa@gmail.com";
+            // const decodedInfo = jwt.decode(tokenInfo);
+
+            // const { id, email } = decodedInfo;
+
+            const id = 1;
+            const email = "flowentoa@gmail.com";
 
             //esto xq la fecha la estoy pasando como string en formato yyyy-mm-dd
             const regExDate = /^\d{4}-\d{2}-\d{2}$/;
@@ -67,9 +82,18 @@ class Event {
                 });
             }
 
+            const updloaderResponse = await cloudinary.uploader.upload(fileStr, {
+                upload_preset: "ml_default"
+            })
+
+            console.log(updloaderResponse);
+
             const eventInfo = {
                 userId: id,
                 ...req.body,
+                max_capacity: parseInt(max_capacity),
+                current_capacity: parseInt(current_capacity),
+                online_link: (online_link.toLowerCase() === 'true'),
             }
 
             const event = await createEvent(eventInfo);
@@ -229,11 +253,7 @@ class Event {
             const { id, email, rol } = decodedInfo;
 
             // const id = 1;
-<<<<<<< HEAD
-            const email = "uliisesrodriguez809@gmail.com";
-=======
             // const email = "uliisesrodriguez809@gmail.com";
->>>>>>> fb6ecff1c9566d3294627558204e6ddf0cf7b865
 
             if (!eventId || !attendance_confirmed) {
                 return res.status(400).send({
@@ -297,7 +317,7 @@ class Event {
 
             const decodedInfo = jwt.decode(tokenInfo);
 
-            const {email} = decodedInfo;
+            const { email } = decodedInfo;
             // const email = "tino@gmail.com";
 
             const user = await getUserByEmail(email);
@@ -322,7 +342,7 @@ class Event {
         }
     }
 
-    static getAllFeedbacks = async(req,res)=>{
+    static getAllFeedbacks = async (req, res) => {
         try {
             const id = req.params.id;
 
@@ -330,14 +350,14 @@ class Event {
 
             if (!feedbacks) {
                 return res.status(500).send({
-                    status : "error",
-                    payload : "No se logro obtener el feedback"
+                    status: "error",
+                    payload: "No se logro obtener el feedback"
                 })
             }
 
             res.send({
-                status : "success",
-                payload : feedbacks
+                status: "success",
+                payload: feedbacks
             })
 
         } catch (error) {

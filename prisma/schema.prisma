@@ -79,6 +79,7 @@ model Event {
   userId           Int
   name             String
   description      String
+  image            String        @default("sin especificar")
   start_date       String
   end_date         String
   max_capacity     Int
