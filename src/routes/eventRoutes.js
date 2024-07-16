@@ -6,8 +6,8 @@ import {uploader} from '../middlewares/uploader.js';
 
 const router = Router();
 
-router.get("/", authCheck(), Event.getEvents);
-// router.get("/", Event.getEvents);
+// router.get("/", authCheck(), Event.getEvents);
+router.get("/", Event.getEvents);
 
 router.get("/:id", authCheck(), Event.getEventById);
 // router.get("/:id", Event.getEventById);
@@ -20,8 +20,8 @@ router.post("/", Event.createEvent);
 router.put("/:id", authCheck(), checkRol(["organizador"]), Event.updateEvent);
 // router.put("/:id", Event.updateEvent);
 
-router.delete("/:id",authCheck(), checkRol(["admin"]),Event.deleteEvent);
-// router.delete("/:id", Event.deleteEvent);
+// router.delete("/:id",authCheck(), checkRol(["admin"]),Event.deleteEvent);
+router.delete("/:id", Event.deleteEvent);
 
 router.post("/register",authCheck(), Event.registerForEvent);
 // router.post("/register", Event.registerForEvent);
