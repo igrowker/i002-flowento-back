@@ -8,7 +8,7 @@ import usersRoutes from './routes/userRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import evnetRoutes from './routes/eventRoutes.js';
 import { initWebSockets, serverCallback } from './server.js';
-import preloadMiddleware from './preloadMiddleware.js';
+// import preloadMiddleware from './preloadMiddleware.js';
 
 // indicamos en el puerto que queremos q corra el server (puede ser cualquier numero q no este ocupad)
 const PORT = options.PORT || 8080;
@@ -34,7 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Middleware para precargar datos al iniciar el servidor
-app.use(preloadMiddleware);
+// app.use(preloadMiddleware);
 
 // rutas:
 app.use("/auth", authRoutes);

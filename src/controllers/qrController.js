@@ -1,5 +1,9 @@
 import crypto from 'crypto';
 import {createQR} from '../models/QrCode.js';
+<<<<<<< HEAD
+=======
+import { getUserByEmail } from '../models/User.js';
+>>>>>>> fb6ecff1c9566d3294627558204e6ddf0cf7b865
 
 class QR {
     static qrInscription = async (req, res) => {
@@ -12,8 +16,13 @@ class QR {
 
             // const { id, email, rol } = decodedInfo;
 
+<<<<<<< HEAD
             const id = 1;
             const email = "qrPrueba@gmail.com";
+=======
+            // const id = 1;
+            // const email = "qrPrueba@gmail.com";
+>>>>>>> fb6ecff1c9566d3294627558204e6ddf0cf7b865
 
             const qrInfo = {
                 ...req.body,

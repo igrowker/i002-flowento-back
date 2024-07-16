@@ -2,8 +2,8 @@ import jwt from "jsonwebtoken";
 import { attendEvent, createEvent, deleteEvent, feedbackEvent, getEventById, getEvents, registerEvent, updateEvent } from "../models/Event.js";
 import { getUserByEmail, getUserById } from "../models/User.js";
 import { emailSender } from "../utilities/emailService.js";
-
-
+import { getFeedbacks } from "../models/Feedback.js";
+import { cloudinary } from '../config/cloudinaryConfig.js';
 
 class Event {
     static getEvents = async (req, res) => {
@@ -26,6 +26,8 @@ class Event {
 
             const event = await getEventById(id);
 
+            console.log(event)
+
             if (!event) {
                 return res.status(400).send({
                     status: "error",
@@ -45,16 +47,32 @@ class Event {
 
     static createEvent = async (req, res) => {
         try {
-            const { start_date, end_date } = req.body;
+
+            // LO Q PODES HACER ES EN LA DB DE PRISMA GUARDAR LOS ID PUBLICOS DE LAS IMAGENES GUARDAS EN CLOUDINARY
+            // ESTO SERIA EN CREATE EVENT
+
+            //esto obtiene todas las imagenees en cloudinary en la carpeta ml_default
+            // const { resources } = await cloudinary.search.expression("folder:ml_default").sort_by("public_id", "desc").max_results(30).execute();
+
+            // const publicIds = resources.map(file => file.public_id);
+
+
+
+
+            //capaz tenes q modificar en app.js el urlendoded y json minuto 18:30 --> https://www.youtube.com/watch?v=Rw_QeJLnCK4&ab_channel=JamesQQuick
+            // const { start_date, end_date, max_capacity, current_capacity, online_link, fileStr } = req.body;
+            // const fileStr = req.body.data;
+            
+            const { start_date, end_date, max_capacity, current_capacity, online_link, image } = req.body;
 
             // const tokenInfo = req.cookies["jwt-cookie"];
 
             // const decodedInfo = jwt.decode(tokenInfo);
 
-            // const { id, email, rol } = decodedInfo;
+            // const { id, email } = decodedInfo;
 
-            const id = 1;
-            const email = "flowentoa@gmail.com";
+            const id = 7;
+            const email = "uliisesrodriguez809@gmail.com";
 
             //esto xq la fecha la estoy pasando como string en formato yyyy-mm-dd
             const regExDate = /^\d{4}-\d{2}-\d{2}$/;
@@ -66,9 +84,20 @@ class Event {
                 });
             }
 
+
+            // const updloaderResponse = await cloudinary.uploader.upload(fileStr, {
+            //     upload_preset: "ml_default"
+            // })
+
+            // console.log(updloaderResponse);
+
+
             const eventInfo = {
                 userId: id,
                 ...req.body,
+                max_capacity: parseInt(max_capacity),
+                current_capacity: parseInt(current_capacity),
+                online_link: (online_link.toLowerCase() === 'true'),
             }
 
             const event = await createEvent(eventInfo);
@@ -151,14 +180,14 @@ class Event {
         try {
             const { eventId } = req.body;
 
-            // const tokenInfo = req.cookies["jwt-cookie"];
+            const tokenInfo = req.cookies["jwt-cookie"];
 
-            // const decodedInfo = jwt.decode(tokenInfo);
+            const decodedInfo = jwt.decode(tokenInfo);
 
-            // const { id, email, rol } = decodedInfo;
+            const { id, email } = decodedInfo;
 
-            const id = 1;
-            const email = "uliisesrodriguez809@gmail.com";
+            // const id = 1;
+            // const email = "uliisesrodriguez809@gmail.com";
 
             if (!eventId) {
                 return res.status(400).send({
@@ -200,6 +229,11 @@ class Event {
                 });
             }
 
+            //actualizo la cantidad de lugares disponibles
+            event.current_capacity += 1;
+
+            const updatedEvent = await updateEvent(event);
+
             const response = await emailSender(email, "Te incirbiste con exito al evento", "Registro al evento");
 
             res.send({
@@ -214,16 +248,16 @@ class Event {
     static confirmAttendance = async (req, res) => {
         try {
             const id_registration = req.params.id;
-            const { eventId, attendance_confirmed } = req.body;
+            const { eventId, userId, attendance_confirmed } = req.body;
 
-            // const tokenInfo = req.cookies["jwt-cookie"];
+            const tokenInfo = req.cookies["jwt-cookie"];
 
-            // const decodedInfo = jwt.decode(tokenInfo);
+            const decodedInfo = jwt.decode(tokenInfo);
 
-            // const { id, email, rol } = decodedInfo;
+            const { id, email, rol } = decodedInfo;
 
-            const id = 1;
-            const email = "uliisesrodriguez809@gmail.com";
+            // const id = 1;
+            // const email = "uliisesrodriguez809@gmail.com";
 
             if (!eventId || !attendance_confirmed) {
                 return res.status(400).send({
@@ -232,12 +266,12 @@ class Event {
                 });
             }
 
-            const user = await getUserById(parseInt(id));
+            const user = await getUserById(parseInt(userId));
 
             if (!user) {
                 return res.status(400).send({
                     status: "error",
-                    payload: `El usuario con el ID: ${id} no se a encontrado`,
+                    payload: `El usuario con el ID: ${userId} no se a encontrado`,
                 });
             }
 
@@ -252,7 +286,7 @@ class Event {
 
             const data = {
                 id_registration: parseInt(id_registration),
-                userId: parseInt(id),
+                userId: parseInt(userId),
                 eventId: parseInt(eventId),
                 attendance_confirmed
             }
@@ -283,12 +317,12 @@ class Event {
             const { comment, rating } = req.body;
 
             //descomentalo cuando este el form del front listo
-            // const tokenInfo = req.cookies["jwt-cookie"];
+            const tokenInfo = req.cookies["jwt-cookie"];
 
-            // const decodedInfo = jwt.decode(tokenInfo);
+            const decodedInfo = jwt.decode(tokenInfo);
 
-            // const {email} = decodedInfo;
-            const email = "tino@gmail.com";
+            const { email } = decodedInfo;
+            // const email = "tino@gmail.com";
 
             const user = await getUserByEmail(email);
 
@@ -307,6 +341,29 @@ class Event {
                 stauts: "success",
                 payload: feedback
             })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    static getAllFeedbacks = async (req, res) => {
+        try {
+            const id = req.params.id;
+
+            const feedbacks = await getFeedbacks(parseInt(id));
+
+            if (!feedbacks) {
+                return res.status(500).send({
+                    status: "error",
+                    payload: "No se logro obtener el feedback"
+                })
+            }
+
+            res.send({
+                status: "success",
+                payload: feedbacks
+            })
+
         } catch (error) {
             console.log(error);
         }
