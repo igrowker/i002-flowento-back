@@ -22,7 +22,9 @@ const corsOptions = {
     origin: true, //included origin as true
     credentials: true, //included credentials as true
 };
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors());
+// app.options('*', cors())
 
 app.use(express.static(__dirname + "/public"));
 

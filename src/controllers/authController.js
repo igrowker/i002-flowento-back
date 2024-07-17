@@ -10,6 +10,8 @@ import { emailSender, generateEmailToken, sendRecoverPassword } from '../utiliti
 class AuthController {
     static login = async (req, res) => {
         try {
+            // res.header("Access-Control-Allow-Origin", "*");
+
             const { email, password } = req.body;
 
             if (!email) {
