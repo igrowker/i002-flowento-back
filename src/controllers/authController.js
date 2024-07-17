@@ -49,7 +49,7 @@ class AuthController {
 
                 const {user_id} = userFind;
 
-                const isValid = await isValidPassword(password, user);
+                const isValid = await isValidPassword(password, userFind);
 
                 if (!isValid) {
                     return res.status(400).send({
