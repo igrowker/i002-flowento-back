@@ -23,7 +23,12 @@ const corsOptions = {
     credentials: true, //included credentials as true
 };
 // app.use(cors(corsOptions));
-app.use(cors());
+
+//ese link te soluciona q la cookie se setea desde back --> front pero front --> back no
+app.use(cors({credentials: true, origin: 'http://localhost:5173'})); //MAGIA : https://es.stackoverflow.com/questions/610900/no-se-guardan-las-cookies
+
+
+// app.use(cors());
 // app.options('*', cors())
 
 app.use(express.static(__dirname + "/public"));
@@ -32,8 +37,8 @@ app.use(express.static(__dirname + "/public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use(cookieParser("palabraSuperSecreta", {}));
-app.use(cookieParser());
+app.use(cookieParser("palabraSuperSecreta", {}));
+// app.use(cookieParser());
 
 // Middleware para precargar datos al iniciar el servidor
 // app.use(preloadMiddleware);
