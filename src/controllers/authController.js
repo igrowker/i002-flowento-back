@@ -67,8 +67,7 @@ class AuthController {
                 }
             }
 
-
-            const token = jwt.sign(user, "jwt-secret-word", { expiresIn: "8h" }); //el exprire podriamos sacarlo, es mas q nada para q se te desconecte automaticamente pasada cierta cantidad de tiempo
+            const token = jwt.sign(user, "jwt-secret-word", { expiresIn: "2h" }); //el exprire podriamos sacarlo, es mas q nada para q se te desconecte automaticamente pasada cierta cantidad de tiempo
 
             //setamos la cookie
             //con maxAge indicamos el tiempo de vida osea cuando expira
@@ -140,11 +139,26 @@ class AuthController {
 
     static logout = async (req, res) => {
         try {
-            if (req.cookies[process.env.COOKIE_WORD]) {
+            console.log("entro");
 
-                res.clearCookie(process.env.COOKIE_WORD);
+            const tokenInfo = req.cookies["jwt-cookie"];
 
-                res.redirect('/');
+            const decodedToken = jwt.decode(tokenInfo);
+
+            console.log(decodedToken);
+
+            console.log(req.cookies[options.COOKIE_WORD]);
+
+            if (req.cookies[options.COOKIE_WORD]) {
+
+                res.clearCookie(options.COOKIE_WORD);
+
+                // res.redirect('/');
+
+                res.send({
+                    status : "success",
+                    payload : "Deslogueo exitoso"
+                })
 
             } else {
                 res.status(401).send({
