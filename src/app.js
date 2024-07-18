@@ -24,8 +24,12 @@ const corsOptions = {
 };
 // app.use(cors(corsOptions));
 
+
+
 //ese link te soluciona q la cookie se setea desde back --> front pero front --> back no
 app.use(cors({credentials: true, origin: 'http://localhost:5173'})); //MAGIA : https://es.stackoverflow.com/questions/610900/no-se-guardan-las-cookies
+
+// app.use(cors({credentials: true, origin: 'http://localhost:5173'})); //ESTO MODIFICALO CON LA URL DE VERCEL PARA EL FRONT
 
 
 // app.use(cors());
