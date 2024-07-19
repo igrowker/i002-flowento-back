@@ -139,15 +139,9 @@ class AuthController {
 
     static logout = async (req, res) => {
         try {
-            console.log("entro");
-
             const tokenInfo = req.cookies["jwt-cookie"];
 
             const decodedToken = jwt.decode(tokenInfo);
-
-            console.log(decodedToken);
-
-            console.log(req.cookies[options.COOKIE_WORD]);
 
             if (req.cookies[options.COOKIE_WORD]) {
 
@@ -179,7 +173,6 @@ class AuthController {
             const { email } = req.body;
             const hostname = req.hostname;
 
-            // para porbarlo ponele 60 segundos pero para el desafio ponele 3600
             const tokenEmail = generateEmailToken(email, 3600);
 
             const respond = await sendRecoverPassword(email, tokenEmail, hostname);

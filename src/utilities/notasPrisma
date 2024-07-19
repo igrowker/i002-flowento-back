@@ -20,3 +20,6 @@
 
 
 // npx prisma studio --> te abre una interfaz para ver las tablas
+
+
+// npx prisma migrate dev --> por si modificas el shcema de pisma para q te tome los cambios
