@@ -84,6 +84,7 @@ model Event {
   end_date         String
   max_capacity     Int
   current_capacity Int
+  price            Int           @default(0)
   type             Type
   online_link      Boolean
   state            State         @default(pending)

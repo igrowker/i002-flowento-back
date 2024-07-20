@@ -56,23 +56,20 @@ class Event {
 
             // const publicIds = resources.map(file => file.public_id);
 
-
-
-
             //capaz tenes q modificar en app.js el urlendoded y json minuto 18:30 --> https://www.youtube.com/watch?v=Rw_QeJLnCK4&ab_channel=JamesQQuick
             // const { start_date, end_date, max_capacity, current_capacity, online_link, fileStr } = req.body;
             // const fileStr = req.body.data;
             
-            const { start_date, end_date, max_capacity, current_capacity, online_link, image } = req.body;
+            const { start_date, end_date, max_capacity, current_capacity, online_link, image, price } = req.body;
 
-            // const tokenInfo = req.cookies["jwt-cookie"];
+            const tokenInfo = req.cookies["jwt-cookie"];
 
-            // const decodedInfo = jwt.decode(tokenInfo);
+            const decodedInfo = jwt.decode(tokenInfo);
 
-            // const { id, email } = decodedInfo;
+            const { id, email } = decodedInfo;
 
-            const id = 7;
-            const email = "uliisesrodriguez809@gmail.com";
+            // const id = 7;
+            // const email = "uliisesrodriguez809@gmail.com";
 
             //esto xq la fecha la estoy pasando como string en formato yyyy-mm-dd
             const regExDate = /^\d{4}-\d{2}-\d{2}$/;
@@ -95,6 +92,7 @@ class Event {
             const eventInfo = {
                 userId: id,
                 ...req.body,
+                price : parseInt(price),
                 max_capacity: parseInt(max_capacity),
                 current_capacity: parseInt(current_capacity),
                 online_link: (online_link.toLowerCase() === 'true'),
@@ -217,7 +215,7 @@ class Event {
             const insciptionInfo = {
                 userId: parseInt(id),
                 eventId: parseInt(eventId),
-                attendance_confirmed: "no"
+                attendance_confirmed: "yes"
             }
 
             const regEvent = await registerEvent(insciptionInfo);
