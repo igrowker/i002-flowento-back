@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes.js';
 import usersRoutes from './routes/userRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import evnetRoutes from './routes/eventRoutes.js';
+import qrRoutes from './routes/qrRoutes.js';
 import { initWebSockets, serverCallback } from './server.js';
 // import preloadMiddleware from './preloadMiddleware.js';
 
@@ -47,6 +48,7 @@ app.use("/auth", authRoutes);
 app.use("/users", usersRoutes);
 app.use("/admin", adminRoutes);
 app.use("/events", evnetRoutes);
+app.use("/qr", qrRoutes);
 
 
 // const server = app.listen(PORT, () => {
