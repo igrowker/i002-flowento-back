@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-const qrDB = prisma.qr;
+const qrDB = prisma.qR;
 
 export const createQR = async(body)=>{
     const qr = await qrDB.create({
