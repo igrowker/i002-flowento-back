@@ -1,20 +1,29 @@
 import crypto from 'crypto';
 import {createQR} from '../models/QrCode.js';
 import { getUserByEmail } from '../models/User.js';
+import qr from 'qrcode';
 
 class QR {
+    static getQr = async (req,res)=>{
+        try {
+            
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     static qrInscription = async (req, res) => {
         try {
             // const { id } = req.body;
 
-            // const tokenInfo = req.cookies["jwt-cookie"];
+            const tokenInfo = req.cookies["jwt-cookie"];
 
-            // const decodedInfo = jwt.decode(tokenInfo);
+            const decodedInfo = jwt.decode(tokenInfo);
 
-            // const { id, email, rol } = decodedInfo;
+            const { id, email, rol } = decodedInfo;
 
-            const id = 1;
-            const email = "qrPrueba@gmail.com";
+            // const id = 1;
+            // const email = "qrPrueba@gmail.com";
             // const id = 1;
             // const email = "qrPrueba@gmail.com";
 

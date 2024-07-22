@@ -5,6 +5,8 @@ import { authCheck } from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
+router.get("/",authCheck(), checkRol(["user","asistente","organizador"]), QR.getQr);
+
 router.post("/", authCheck(), checkRol(["user","asistente","organizador"]), QR.qrInscription);
 
 export default router;
