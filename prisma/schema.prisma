@@ -85,6 +85,8 @@ model Event {
   max_capacity     Int
   current_capacity Int
   price            Int           @default(0)
+  hour             String        @default("11:30")
+  location         String        @default("sin especificar de momento")
   type             Type
   online_link      Boolean
   state            State         @default(pending)

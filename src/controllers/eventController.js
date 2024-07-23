@@ -89,9 +89,10 @@ class Event {
             // console.log(updloaderResponse);
 
 
+            //SI PRISMA TIRA ERRO LO MAS SEGURO ES Q TE FALTO PASARLE ALGUN VALOR O ALGUN VALOR ES NAN O NULL O UNDEFINED O ALGUNA MIERDA ASI
             const eventInfo = {
-                userId: id,
                 ...req.body,
+                userId: id,
                 price : parseInt(price),
                 max_capacity: parseInt(max_capacity),
                 current_capacity: parseInt(current_capacity),
