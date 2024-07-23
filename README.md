@@ -29,12 +29,12 @@ Crear una API RESTful que centralice la creación, inscripción, seguimiento y e
    ```bash
    git clone [URL del repositorio]
 
-##Navega al directorio del backend:
+Navega al directorio del backend:
 bash
 Copiar
 cd [nombre-del-backend]
 
-##Instala las dependencias:
+Instala las dependencias:
 bash
 Copiar
 npm install
@@ -75,28 +75,28 @@ GET /users/:id: Obtener detalles de un usuario específico.
 PUT /users/:id: Actualizar información de un usuario específico.
 DELETE /users/:id: Eliminar un usuario específico (solo administradores).
 
-##Espacios
+## Espacios
 GET /spaces: Obtener todos los espacios.
 POST /spaces: Crear un nuevo espacio (solo administradores).
 GET /spaces/:id: Obtener detalles de un espacio específico.
 PUT /spaces/:id: Actualizar un espacio específico (solo administradores).
 DELETE /spaces/:id: Eliminar un espacio específico (solo administradores).
 
-##Notificaciones
+## Notificaciones
 GET /notifications: Obtener todas las notificaciones.
 POST /notifications: Crear una nueva notificación.
 Mensajes
 GET /messages: Obtener todas las conversaciones.
 POST /messages: Enviar un nuevo mensaje.
 
-##Códigos QR
+## Códigos QR
 GET /qr/generate/:eventId: Generar código QR para un evento.
 POST /qr/scan: Escanear código QR y registrar asistencia.
 
-##Arquitectura
+## Arquitectura
 La arquitectura del backend está diseñada para ser modular y escalable. Utiliza controladores para manejar la lógica de negocio y rutas para definir los endpoints de la API. Se implementan middlewares para la autenticación y gestión de roles.
 
-##Controladores
+## Controladores
 authController.js: Maneja la autenticación y registro de usuarios.
 eventController.js: Gestiona la creación, actualización, eliminación y consulta de eventos.
 userController.js: Gestiona las operaciones relacionadas con los usuarios.
@@ -105,7 +105,7 @@ notificationController.js: Gestiona el envío y consulta de notificaciones.
 messageController.js: Maneja el envío y recepción de mensajes internos.
 qrController.js: Gestiona la generación y escaneo de códigos QR para la asistencia a eventos.
 
-##Modelos
+## Modelos
 Los modelos representan las tablas de la base de datos y definen las relaciones entre ellas. Utilizan Sequelize para mapear las entidades de la base de datos a objetos de JavaScript.
 
 User.js: Representa la tabla de usuarios.
@@ -118,11 +118,11 @@ QrCode.js: Representa la tabla de códigos QR generados para eventos.
 Space.js: Representa la tabla de espacios.
 Reservation.js: Representa la tabla de reservas de espacios.
 
-##Seguridad
+## Seguridad
 La autenticación se maneja mediante JWT, asegurando que solo los usuarios autenticados puedan acceder a ciertas rutas. Se implementan prácticas recomendadas para la protección contra ataques comunes.
 
-##Contribuciones
+## Contribuciones
 Las contribuciones son bienvenidas. Por favor, abre un issue o envía un pull request.
 
-##Licencia
+## Licencia
 Este proyecto está bajo la Licencia [Nombre de la Licencia].
