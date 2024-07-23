@@ -1,167 +1,130 @@
-# Flowento BACK
+# Backend de Flowento
 
-### Introducción
-Este informe proporciona una descripción general del back-end de un proyecto, incluyendo su arquitectura, tecnologías utilizadas, funcionalidades
+![image](https://github.com/user-attachments/assets/e0d67be2-2bab-4512-b222-f0b665c8aa30)
 
-### Para iniciar el servidor
-1. npm install
-2. node .\src\app.js 
-3. opcion alternatica a 3. : node --watch .\src\app.js (Node JS V.18.11.0 o superior)
+## Descripción General
 
-### Arquitectura
-La arquitectura del back-end se basa en una arquitectura de microservicios, compuesta por una serie de servicios independientes y escalables. Esta arquitectura permite una mayor flexibilidad, modularidad y facilidad de mantenimiento.
+Flowento es una aplicación digital mobile-first y SPA (Single Page Application) diseñada para la gestión y comunicación de eventos del Hub de Empresas (HdE) de Valencia. Este backend está destinado a manejar la lógica del servidor, la gestión de la base de datos y la comunicación con el frontend, facilitando la interacción entre organizadores y asistentes.
 
-Los servicios principales del back-end incluyen:
+## Problema que se intenta resolver
 
-1. Servicio de autenticación: Responsable de la autenticación y autorización de usuarios.
+HdE enfrenta ineficiencias en la gestión de eventos debido a procesos manuales y falta de digitalización. La propuesta y aprobación de eventos, así como las inscripciones y el control de asistencia, se manejan manualmente, lo que complica el seguimiento y análisis de la participación.
 
-2. Servicio de datos: Proporciona acceso a la base de datos y a los datos del proyecto.
+## Solución Propuesta
 
-3. Servicio de lógica de negocio: Implementa la lógica de negocio del proyecto.
+Crear una API RESTful que centralice la creación, inscripción, seguimiento y evaluación de eventos, reemplazando los procesos manuales con una plataforma automatizada e intuitiva.
 
-### Tecnologías utilizadas
-1. Lenguaje de programación: JavaScript
-2. Framework web: React JS
-3. Servidor: Node JS
-4. Framework Back: Express JS
-5. Base de datos: PostgreSQL
-6. ORM : Prisma ORm
-7. Mensajes: Nodemailer
-8. Herramientas de testing: Postman
+## Tecnologías Utilizadas
 
-### Funcionalidades
-1. Gestión de usuarios: Registro, autenticación y autorización de usuarios.
-2. Gestión de datos: Almacenamiento, recuperación y actualización de datos.
-3. Lógica de negocio: Implementación de la lógica de negocio del proyecto.
-4. Comunicación: Facilita la comunicación entre los microservicios.
-5. Manejo de errores: Facilita el manejo de errores
+- **Lenguaje**: Node.js
+- **Framework**: Express
+- **Base de Datos**: PostgreSQL
+- **ORM**: Sequelize
+- **Autenticación**: JWT
+- **Seguridad**: Bcrypt
+- **WebSockets**: Socket.io
+- **Generación de QR**: QRCode
 
-#### Package
-1. bcrypt : Para la validacion y encriptacion de la contraseañas
-2. cors : Para permitir el acceso al servidor desde otros puertos
-3. dotenv (DEV) : Manejo de variables de entorno
-4. jsonwebtoken : Manejo de token para guardar informacion no sensible del usuario
-5. mongoose : Para la creacion de schemas y manejo de los datos de la DB
-6. nodemailer : Manejo de mensajeria, evia emails con informacion sobre registro, adopcion, etc
+## Instalación
 
+1. Clona el repositorio:
+   ```bash
+   git clone [URL del repositorio]
 
-### Arquitectura de carpetas
+Navega al directorio del backend:
+bash
+Copiar
+cd [nombre-del-backend]
 
-* ./src
-    1. carpeta contenedora de rutas, controladores, modelos, configuraciones
+Instala las dependencias:
+bash
+Copiar
+npm install
+Configuración
+Crea un archivo .env en la raíz del proyecto y añade las siguientes variables de entorno:
 
-* ./src/app.js
-    1. configuracion para el funcionamiento de express, rutas, cors
+ini
+Copiar
+DATABASE_URL=[url de la base de datos]
+JWT_SECRET=[secreto para JWT]
+PORT=[puerto en el que correrá el servidor]
 
-* ./src/config
-    1. config.js --> manejador de variables de entorno con dotenv
-    2. cloudinaryConfig.js --> configuracion cloudinary
+## Ejecución
+Para iniciar el servidor, utiliza el siguiente comando:
 
-* ./src/controllers
-    1. adminController.js --> logica de negocios para admin-eventos
-    2. authController.js --> logica de negocios para sistema de login / registro
-    3. eventController.js --> logica para el manejo de eventos (CRUD, feedback, registro a eventos)
-    4. spaceController.js --> logica para la CRUD de espacios
-    5. userController.js --> logica para el CRUD de usuarios
-    6. qrController.js --> generador de QR con qrcode
+bash
+Copiar
+npm start
+Endpoints Principales
+Autenticación
+POST /auth/register: Registro de nuevos usuarios.
+POST /auth/login: Autenticación de usuarios.
 
-* ./src/middelwares
-    1. uploader.js --> middelware trabajado con multer para el alamcenamientos de img,docs,etc
-    2. roleMiddelware.js --> middelware usado para el check de roles para limitar el acceso a ciertos endpoints
-    3. authMiddelware.js --> middelware para comprobar que el usuario autenticado
+## Gestión de Eventos
+GET /events: Obtener todos los eventos.
+POST /events: Crear un nuevo evento (solo usuarios autorizados).
+GET /events/:id: Obtener detalles de un evento específico.
+PUT /events/:id: Actualizar un evento específico (solo usuarios autorizados).
+DELETE /events/:id: Eliminar un evento específico (solo administradores).
 
-* ./src/models
-    1. Event.js --> manager para los eventos en la DB
-    2. Feddback.js --> manager para los comentarios
-    3. Provider.js --> manager para la creacion de provedores de eventos
-    4. QrCode.js --> manager para la creacion y obtencion de QR
-    5. Registration.js --> manager para el registro a eventos
-    6. Reservation.js --> manager para la reserva de espacios para eventos
-    7. Space.js --> manager para CRUD de espacios
-    8. User.js --> manager para CRUD de ususarios
+## Inscripciones
+POST /events/register: Inscripción a un evento.
+POST /events/attend: Confirmación de asistencia a un evento.
 
-* ./src/public
-    1. js --> scripts
-    2. img --> imagenes
+## Usuarios
+GET /users: Obtener todos los usuarios.
+GET /users/:id: Obtener detalles de un usuario específico.
+PUT /users/:id: Actualizar información de un usuario específico.
+DELETE /users/:id: Eliminar un usuario específico (solo administradores).
 
-* ./src/routes
-    1. adminRoutes.js --> endpoints admin-eventos
-    2. authRoutes.js --> endpoints login, registro, logout, resetpassword
-    3. qrRoutes.js --> endpoints obtencion y creacion del QR
-    4. spaceRoutes.js --> endpoints para CRUD de espacios para eventos
-    5. userRoutes.js --> endpoints para CRUD de usuarios
+## Espacios
+GET /spaces: Obtener todos los espacios.
+POST /spaces: Crear un nuevo espacio (solo administradores).
+GET /spaces/:id: Obtener detalles de un espacio específico.
+PUT /spaces/:id: Actualizar un espacio específico (solo administradores).
+DELETE /spaces/:id: Eliminar un espacio específico (solo administradores).
 
-* ./src/controllers
-    1. emailService.js --> implementacion del servico de envio de emails con nodemailer
-    2. notas para el manejo de prisma
+## Notificaciones
+GET /notifications: Obtener todas las notificaciones.
+POST /notifications: Crear una nueva notificación.
+Mensajes
+GET /messages: Obtener todas las conversaciones.
+POST /messages: Enviar un nuevo mensaje.
 
-* ./src/utils.js --> manejo de contraseñas, rutas absolutas
+## Códigos QR
+GET /qr/generate/:eventId: Generar código QR para un evento.
+POST /qr/scan: Escanear código QR y registrar asistencia.
 
-* ./prisma
-    1. schema.prisma --> schemas para las tablas de la DB
-    2. migrations --> transpilacion de los schemas a codigo PostgreSQL
+## Arquitectura
+La arquitectura del backend está diseñada para ser modular y escalable. Utiliza controladores para manejar la lógica de negocio y rutas para definir los endpoints de la API. Se implementan middlewares para la autenticación y gestión de roles.
 
-* .env
-    1. variables de entorno
-* package.json
-    1. archivo de dependencias del proyecto
+## Controladores
+authController.js: Maneja la autenticación y registro de usuarios.
+eventController.js: Gestiona la creación, actualización, eliminación y consulta de eventos.
+userController.js: Gestiona las operaciones relacionadas con los usuarios.
+spaceController.js: Maneja la gestión y reserva de espacios.
+notificationController.js: Gestiona el envío y consulta de notificaciones.
+messageController.js: Maneja el envío y recepción de mensajes internos.
+qrController.js: Gestiona la generación y escaneo de códigos QR para la asistencia a eventos.
 
-## Rutas 
-```javascript
-//ejemplo de rutas
-import { Router } from 'express';
-import { Space } from '../controllers/spaceController.js';
-import { checkRol } from '../middlewares/roleMiddleware.js';
-import { authCheck } from '../middlewares/authMiddleware.js';
+## Modelos
+Los modelos representan las tablas de la base de datos y definen las relaciones entre ellas. Utilizan Sequelize para mapear las entidades de la base de datos a objetos de JavaScript.
 
-const router = Router();
+User.js: Representa la tabla de usuarios.
+Event.js: Representa la tabla de eventos.
+Registration.js: Representa la tabla de inscripciones a eventos.
+Feedback.js: Representa la tabla de feedback de eventos.
+Notification.js: Representa la tabla de notificaciones.
+Message.js: Representa la tabla de mensajes enviados.
+QrCode.js: Representa la tabla de códigos QR generados para eventos.
+Space.js: Representa la tabla de espacios.
+Reservation.js: Representa la tabla de reservas de espacios.
 
-router.get("/", authCheck(), checkRol(["admin"]), Space.allSpaces);
+## Seguridad
+La autenticación se maneja mediante JWT, asegurando que solo los usuarios autenticados puedan acceder a ciertas rutas. Se implementan prácticas recomendadas para la protección contra ataques comunes.
 
-export default router;
-```
+## Contribuciones
+Las contribuciones son bienvenidas. Por favor, abre un issue o envía un pull request.
 
-## Controllers 
-```javascript
-//ejemplo de controllers
-import jwt from 'jsonwebtoken';
-import { getUsers, getUserByEmail, createUser, updateUser } from '../models/User.js';
-import { createHashPassword, isValidPassword } from '../utils.js'
-import { options } from '../config/config.js';
-import { emailSender, generateEmailToken, sendRecoverPassword } from '../utilities/emailService.js';
-
-class AuthController {
-    static logout = async (req, res) => {
-        try {
-            const tokenInfo = req.cookies[option.COOKIE_WORD];
-
-            const decodedToken = jwt.decode(tokenInfo);
-
-            if (req.cookies[options.COOKIE_WORD]) {
-
-                res.clearCookie(options.COOKIE_WORD);
-
-                // res.redirect('/');
-
-                res.send({
-                    status : "success",
-                    payload : "Deslogueo exitoso"
-                })
-
-            } else {
-                res.status(401).send({
-                    status: "error",
-                    payload: "No se logro desloguear con exito"
-                })
-            }
-        } catch (error) {
-            res.status(500).send({
-                status: "error",
-                message: "No se logro cerrar sesion"
-            })
-        }
-    }
-}
-
-export { AuthController };
-```
+## Licencia
+Este proyecto está bajo la Licencia [Nombre de la Licencia].
