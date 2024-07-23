@@ -1,25 +1,37 @@
 import crypto from 'crypto';
 import {createQR} from '../models/QrCode.js';
 import { getUserByEmail } from '../models/User.js';
+import QrCode from 'qrcode';
 
 class QR {
+    static getQr = async (req,res)=>{
+        try {
+            const url = "http://localhost:8080/qrInscription?eventId=1";
+
+            QrCode.toDataURL(url,(err, qrCodeUrl)=>{
+                if (err) {
+                    res.status(500).send({
+                        status : "error",
+                        payload : "Error en el servidor"
+                    })
+                } else {
+                    res.send(`
+                        <img src="${qrCodeUrl}" alt="QR" />
+                    `)
+                }
+            })
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     static qrInscription = async (req, res) => {
         try {
-            // const { id } = req.body;
-
-            // const tokenInfo = req.cookies["jwt-cookie"];
-
-            // const decodedInfo = jwt.decode(tokenInfo);
-
-            // const { id, email, rol } = decodedInfo;
-
-            const id = 1;
-            const email = "qrPrueba@gmail.com";
-            // const id = 1;
-            // const email = "qrPrueba@gmail.com";
+            const idEvent = req.query.eventId;
 
             const qrInfo = {
-                ...req.body,
+                eventId : idEvent,
                 code : crypto.randomUUID(),
             }
 
@@ -31,8 +43,6 @@ class QR {
                     payload: "No se logro crear el qr para la inscripcion del evento"
                 });
             }
-
-            const response = await emailSender(email, `Tu confirmacion de asistencia al evento se logro con exito, este es tu codigo: ${qr.code}`, "Confirmacion al evento");
 
             res.send({
                 status: "success",

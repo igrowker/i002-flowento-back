@@ -72,22 +72,12 @@ class AuthController {
             //setamos la cookie
             //con maxAge indicamos el tiempo de vida osea cuando expira
             //HttpOnly atributo de navegador creado para impedir que las aplicaciones del lado del cliente, creo q ademas evita q puedas sobreescribir la cookie (osea si la modificas q te tire de la pagina y te mande al login devuelta)
-            // const options = {
-            //     httpOnly: true,
-            //     secure: false,
-            //     sameSite: "none",
-            //     domain: "i002-flowento-back-1.onrender.com"
-            // }
-
             // res.cookie("jwt-cookie", token, { httpOnly: true, maxAge: 3600000 }).json({
             //     status: "success",
             //     payload: token
             // });
 
-            // res.cookie("jwt-cookie", token, options).json({
-            //     status: "success",
-            //     payload: token
-            // });
+            // https://github.com/expressjs/express/discussions/5423#discussioncomment-9220105 --> esto soluciona q no se setea el token en render
 
             res.cookie('jwt-cookie', token, {
                 httpOnly: true,
