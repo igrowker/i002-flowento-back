@@ -1,5 +1,7 @@
 # README - Backend de Flowento
 
+![image](https://github.com/user-attachments/assets/e0d67be2-2bab-4512-b222-f0b665c8aa30)
+
 ## Descripción General
 
 Flowento es una aplicación digital mobile-first y SPA (Single Page Application) diseñada para la gestión y comunicación de eventos del Hub de Empresas (HdE) de Valencia. Este backend está destinado a manejar la lógica del servidor, la gestión de la base de datos y la comunicación con el frontend, facilitando la interacción entre organizadores y asistentes.
