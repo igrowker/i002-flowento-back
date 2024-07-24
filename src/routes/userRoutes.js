@@ -5,6 +5,8 @@ import { authCheck } from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
+router.get("/profile", authCheck(), User.profile);
+
 // para probar de momento mientras se termina el login del front no se le pone el middleware q chekea q solo el admin puede acceder a este endpoint (cuando este listo dejar el comentado y sacar el de abajo)
 router.get("/", authCheck(), checkRol(["admin"]), User.allUsers);
 // router.get("/", User.allUsers);

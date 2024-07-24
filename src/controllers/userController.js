@@ -2,6 +2,40 @@ import jwt from 'jsonwebtoken';
 import { deleteUser, getUserByEmail, getUsers, updateUser } from '../models/User.js';
 
 class User {
+    static profile = async(req,res)=>{
+        try {
+            const tokenInfo = req.cookies["jwt-cookie"];
+
+            const decodedInfo = jwt.decode(tokenInfo);
+
+            const { id, email } = decodedInfo;
+
+            if (!id || !email) {
+                return res.status(500).send({
+                    status : "error",
+                    payload : "No se logro encontrar al usuario"
+                })
+            }
+
+            const user = await getUserByEmail(email);
+
+            if (!user) {
+                return res.status(500).send({
+                    status : "error",
+                    payload : "No se logro encontrar al usuario"
+                })
+            }
+
+            res.send({
+                status : "success",
+                payload : user
+            })
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     static allUsers = async (req, res) => {
         try {
             const users = await getUsers();
