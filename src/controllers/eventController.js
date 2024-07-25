@@ -10,6 +10,8 @@ class Event {
         try {
             const events = await getEvents();
 
+            console.log(events);
+
             res.send({
                 status: "success",
                 payload: events
