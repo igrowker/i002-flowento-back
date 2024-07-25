@@ -17,19 +17,19 @@ router.get("/:id", authCheck(), Event.getEventById);
 // router.post("/", uploader.single("file"), Event.createEvent);
 router.post("/", Event.createEvent);
 
-router.put("/:id", authCheck(), checkRol(["organizador"]), Event.updateEvent);
-// router.put("/:id", Event.updateEvent);
+// router.put("/:id", authCheck(), checkRol(["organizador"]), Event.updateEvent);
+router.put("/:id", Event.updateEvent);
 
-router.delete("/:id",authCheck(), checkRol(["admin"]),Event.deleteEvent);
-// router.delete("/:id", Event.deleteEvent);
+// router.delete("/:id",authCheck(), checkRol(["admin"]),Event.deleteEvent);
+router.delete("/:id", Event.deleteEvent);
 
 // router.post("/register",authCheck(), Event.registerForEvent);
 router.post("/register", Event.registerForEvent);
 
-router.put("/attend",authCheck(), Event.confirmAttendance);
-// router.put("/attend/:id", Event.confirmAttendance);
+// router.put("/attend",authCheck(), Event.confirmAttendance);
+router.put("/attend/:id", Event.confirmAttendance);
 
-router.post("/feedback",authCheck(), Event.submitFeedback);
-// router.post("/feedback/:id", Event.submitFeedback);
+// router.post("/feedback",authCheck(), Event.submitFeedback);
+router.post("/feedback/:id", Event.submitFeedback);
 
 export default router;
