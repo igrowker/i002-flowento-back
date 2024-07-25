@@ -4,11 +4,14 @@ import { deleteUser, getUserByEmail, getUsers, updateUser } from '../models/User
 class User {
     static profile = async(req,res)=>{
         try {
-            const tokenInfo = req.cookies["jwt-cookie"];
+            // const tokenInfo = req.cookies["jwt-cookie"];
 
-            const decodedInfo = jwt.decode(tokenInfo);
+            // const decodedInfo = jwt.decode(tokenInfo);
 
-            const { id, email } = decodedInfo;
+            // const { id, email } = decodedInfo;
+
+            const id = 7;
+            const email = "uliisesrodriguez809@gmail.com";
 
             if (!id || !email) {
                 return res.status(500).send({
@@ -58,7 +61,7 @@ class User {
 
     static getUserByEmail = async (req, res) => {
         try {
-            const email = req.params.email;
+            const email = req.params.email || "uliisesrodriguez809@gmail.com";
 
             const userFind = await getUserByEmail(email);
 
@@ -80,7 +83,7 @@ class User {
 
     static updateUserByEmail = async (req, res) => {
         try {
-            const email = req.params.email;
+            const email = req.params.email || "uliisesrodriguez809@gmail.com";
 
             const userFind = await getUserByEmail(email);
 

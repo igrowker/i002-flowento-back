@@ -47,29 +47,17 @@ class Event {
 
     static createEvent = async (req, res) => {
         try {
-
-            // LO Q PODES HACER ES EN LA DB DE PRISMA GUARDAR LOS ID PUBLICOS DE LAS IMAGENES GUARDAS EN CLOUDINARY
-            // ESTO SERIA EN CREATE EVENT
-
-            //esto obtiene todas las imagenees en cloudinary en la carpeta ml_default
-            // const { resources } = await cloudinary.search.expression("folder:ml_default").sort_by("public_id", "desc").max_results(30).execute();
-
-            // const publicIds = resources.map(file => file.public_id);
-
-            //capaz tenes q modificar en app.js el urlendoded y json minuto 18:30 --> https://www.youtube.com/watch?v=Rw_QeJLnCK4&ab_channel=JamesQQuick
-            // const { start_date, end_date, max_capacity, current_capacity, online_link, fileStr } = req.body;
-            // const fileStr = req.body.data;
             
-            const { start_date, end_date, max_capacity, current_capacity, online_link, image, price } = req.body;
+            const {start_date, end_date, max_capacity, current_capacity, online_link, image, price } = req.body;
 
-            const tokenInfo = req.cookies["jwt-cookie"];
+            // const tokenInfo = req.cookies["jwt-cookie"];
 
-            const decodedInfo = jwt.decode(tokenInfo);
+            // const decodedInfo = jwt.decode(tokenInfo);
 
-            const { id, email } = decodedInfo;
+            // const { id, email } = decodedInfo;
 
-            // const id = 7;
-            // const email = "uliisesrodriguez809@gmail.com";
+            const id = 7;
+            const email = "uliisesrodriguez809@gmail.com";
 
             //esto xq la fecha la estoy pasando como string en formato yyyy-mm-dd
             const regExDate = /^\d{4}-\d{2}-\d{2}$/;
@@ -80,14 +68,6 @@ class Event {
                     payload: "El formato de la fecha debe de ser yyyy-mm-dd"
                 });
             }
-
-
-            // const updloaderResponse = await cloudinary.uploader.upload(fileStr, {
-            //     upload_preset: "ml_default"
-            // })
-
-            // console.log(updloaderResponse);
-
 
             //SI PRISMA TIRA ERRO LO MAS SEGURO ES Q TE FALTO PASARLE ALGUN VALOR O ALGUN VALOR ES NAN O NULL O UNDEFINED O ALGUNA MIERDA ASI
             const eventInfo = {
@@ -317,12 +297,15 @@ class Event {
             const { comment, rating } = req.body;
 
             //descomentalo cuando este el form del front listo
-            const tokenInfo = req.cookies["jwt-cookie"];
+            // const tokenInfo = req.cookies["jwt-cookie"];
 
-            const decodedInfo = jwt.decode(tokenInfo);
+            // const decodedInfo = jwt.decode(tokenInfo);
 
-            const { email } = decodedInfo;
+            // const { email } = decodedInfo;
             // const email = "tino@gmail.com";
+
+            const id = 7;
+            const email = "uliisesrodriguez809@gmail.com";
 
             const user = await getUserByEmail(email);
 
