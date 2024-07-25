@@ -179,16 +179,15 @@ class Event {
 
     static registerForEvent = async (req, res) => {
         try {
-            const { eventId } = req.body;
+            const { eventId, email, name } = req.body;
 
-            const tokenInfo = req.cookies["jwt-cookie"];
+            // const tokenInfo = req.cookies["jwt-cookie"];
 
-            const decodedInfo = jwt.decode(tokenInfo);
+            // const decodedInfo = jwt.decode(tokenInfo);
 
-            const { id, email } = decodedInfo;
+            // const { id, email } = decodedInfo;
 
-            // const id = 1;
-            // const email = "uliisesrodriguez809@gmail.com";
+            console.log(req.body);
 
             if (!eventId) {
                 return res.status(400).send({
@@ -197,7 +196,9 @@ class Event {
                 });
             }
 
-            const user = await getUserById(parseInt(id));
+            const user = await getUserByEmail(email);
+
+            console.log(user);
 
             if (!user) {
                 return res.status(400).send({
@@ -216,7 +217,7 @@ class Event {
             }
 
             const insciptionInfo = {
-                userId: parseInt(id),
+                userId: parseInt(user.id_user),
                 eventId: parseInt(eventId),
                 attendance_confirmed: "yes"
             }

@@ -23,8 +23,8 @@ router.put("/:id", authCheck(), checkRol(["organizador"]), Event.updateEvent);
 router.delete("/:id",authCheck(), checkRol(["admin"]),Event.deleteEvent);
 // router.delete("/:id", Event.deleteEvent);
 
-router.post("/register",authCheck(), Event.registerForEvent);
-// router.post("/register", Event.registerForEvent);
+// router.post("/register",authCheck(), Event.registerForEvent);
+router.post("/register", Event.registerForEvent);
 
 router.put("/attend",authCheck(), Event.confirmAttendance);
 // router.put("/attend/:id", Event.confirmAttendance);
