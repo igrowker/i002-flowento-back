@@ -9,8 +9,8 @@ const router = Router();
 // router.get("/", authCheck(), Event.getEvents);
 router.get("/", Event.getEvents);
 
-router.get("/:id", authCheck(), Event.getEventById);
-// router.get("/:id", Event.getEventById);
+// router.get("/:id", authCheck(), Event.getEventById);
+router.get("/:id", Event.getEventById);
 
 //uploader.single("file") tiene q coincidir este nombre con el del input
 // router.post("/", authCheck(),checkRol(["admin","organizador"]), uploader.single("file") ,Event.createEvent);
