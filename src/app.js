@@ -16,6 +16,23 @@ const PORT = options.PORT || 8080;
 // inicializamos express
 const app = express();
 
+// const whiteList = ['http://localhost:5173', 'http://flowento.vercel.app/', 'https://flowento.vercel.app/'];
+
+// const optionsCors = {
+//     origin : function (origin,callback){
+//         if (whiteList.indexOf(origin) !== -1 || !origin) {
+//             callback(null,true);
+//         }
+//         else{
+//             callback(new Error("No se pudo"))
+//         }
+//     }
+// }
+
+
+// app.use(cors(optionsCors))
+
+
 app.use(function (req, res, next) {
     // res.header("Access-Control-Allow-Origin", "*");
     const allowedOrigins = ['http://localhost:5173', 'http://flowento.vercel.app/', 'https://flowento.vercel.app/'];

@@ -6,8 +6,8 @@ import {uploader} from '../middlewares/uploader.js';
 
 const router = Router();
 
-router.get("/", authCheck(), Event.getEvents);
-// router.get("/", Event.getEvents);
+// router.get("/", authCheck(), Event.getEvents);
+router.get("/", Event.getEvents);
 
 router.get("/:id", authCheck(), Event.getEventById);
 // router.get("/:id", Event.getEventById);
