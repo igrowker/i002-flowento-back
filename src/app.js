@@ -16,20 +16,20 @@ const PORT = options.PORT || 8080;
 // inicializamos express
 const app = express();
 
-app.use(cors());
+// app.use(cors());
 
-// app.use(function (req, res, next) {
-//     // res.header("Access-Control-Allow-Origin", "*");
-//     const allowedOrigins = ['http://localhost:5173', 'http://flowento.vercel.app/', 'https://flowento.vercel.app/'];
-//     const origin = req.headers.origin;
-//     if (allowedOrigins.includes(origin)) {
-//         res.setHeader('Access-Control-Allow-Origin', origin);
-//     }
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-//     res.header("Access-Control-Allow-credentials", true);
-//     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, UPDATE");
-//     next();
-// });
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    const allowedOrigins = ['http://localhost:5173', 'http://flowento.vercel.app/', 'https://flowento.vercel.app/'];
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    res.header("Access-Control-Allow-credentials", true);
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, UPDATE");
+    next();
+});
 
 // middleware para permitir q el server se pueda acceder desde otro dominio
 // esto por si el front esta trabajando en por ejem: http://localhost:3030/ y nosotros en el back http://localhost:8080/ darle permiso al front para poder acceder al server
