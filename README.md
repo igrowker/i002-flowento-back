@@ -126,5 +126,11 @@ La autenticación se maneja mediante JWT, asegurando que solo los usuarios auten
 ## Contribuciones
 Las contribuciones son bienvenidas. Por favor, abre un issue o envía un pull request.
 
-## Licencia
-Este proyecto está bajo la Licencia [Nombre de la Licencia].
+Agradecemos a los siguientes contribuidores por su valiosa participación en el proyecto:
+
+- Project Manager - Pamela Pilotti
+- Front End - Eduardo Chacon
+- Back End - Ulises Rodriguez
+- Front End - Christian Gil
+- Front End - Dante Caballero
+- QA - Fabricio Carpentieri
